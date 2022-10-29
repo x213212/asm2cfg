@@ -211,10 +211,60 @@ class X86TargetInfo:
         return 'call' in instruction.opcode
 
     def is_jump(self, instruction):
+        # print(instruction)
         return instruction.opcode[0] == 'j'
+    # def is_jump2(self, instruction):
+    #     return instruction.opcode[0] == 'jal'
 
     def is_unconditional_jump(self, instruction):
         return instruction.opcode.startswith('jmp')
+
+    def is_sink(self, instruction):
+        """
+        Is this an instruction which terminates function execution e.g. return?
+        """
+        return instruction.opcode.startswith('ret')
+
+
+
+class riscvTargetInfo:
+    """
+    Contains instruction info for riscv-compatible targets.
+    """
+
+    def __init__(self):
+        pass
+
+    def comment(self):
+        return '#'
+
+    def is_call(self, instruction):
+        # print(instruction)
+        # Various flavors of call:
+        #   call   *0x26a16(%rip)
+        #   call   0x555555555542
+        #   addr32 call 0x55555558add0
+        return instruction.opcode in ('call')\
+            and instruction.opcode not in ('beq', 'bne', 'blt', 'bge', 'bltu', 'bgeu','blez','bnez','beqz')
+
+    def is_jump(self, instruction):
+        
+        # print(instruction)
+        return instruction.opcode in ('j', 'jle', 'jl', 'je', 'jne', 'jge','je','jal') and not self.is_call(instruction)
+        # return instruction.opcode[0] == 'j'
+    # def is_jump2(self, instruction):
+    #     return instruction.opcode[0] == 'jal'
+    def is_branch(self, instruction):
+        # print(instruction)
+        # Various flavors of call:
+        #   call   *0x26a16(%rip)
+        #   call   0x555555555542
+        #   addr32 call 0x55555558add0
+        return instruction.opcode in ('beq', 'bne', 'blt', 'bge', 'bltu', 'bgeu','blez','bnez','beqz')
+    def is_unconditional_jump(self, instruction):
+        
+        return instruction.opcode.startswith('jmp') 
+        
 
     def is_sink(self, instruction):
         """
@@ -275,11 +325,15 @@ class Instruction:
         self.ops = ops
         self.target = target
         self.info = target_info
+    
         if imm is not None and (self.is_jump() or self.is_call()):
+            # print("test")
+            # print(imm)
             if self.target is None:
                 self.target = imm
             else:
                 self.target.merge(imm)
+        
 
     def is_call(self):
         return self.info.is_call(self)
@@ -287,8 +341,15 @@ class Instruction:
     def is_jump(self):
         return self.info.is_jump(self)
 
+    def is_branch(self):
+        return self.info.is_branch(self)
+
     def is_direct_jump(self):
         return self.is_jump() and re.match(fr'{HEX_LONG_PATTERN}', self.ops[0])
+    def is_direct_jump2(self):
+        return self.is_jump() 
+    def is_branch_1(self):
+        return self.is_branch() 
 
     def is_sink(self):
         return self.info.is_sink(self)
@@ -365,7 +426,7 @@ def parse_target(line):
     """
     Parses optional instruction branch target hint
     """
-    target_match = re.match(r'\s*<([a-zA-Z_@0-9]+)([+-]0x[0-9a-f]+|[+-][0-9]+)?>(.*)', line)
+    target_match = re.match(r'\s*<([a-zA-Z_@0-9.*]+)([+-]0x[0-9a-f]+|[+-][0-9]+)?>(.*)', line)
     if target_match is None:
         return None, line
     offset = target_match[2] or '+0'
@@ -423,12 +484,12 @@ def parse_line(line, lineno, function_name, fmt, target_info):
         return None
 
     target, line = parse_target(line)
+    print(parse_target(line))
 
     imm, line = parse_comment(line, target_info)
     if line:
         # Expecting complete parse
         return None
-
     # Set base symbol for relative addresses
     if address.base is None:
         address.base = function_name
@@ -455,9 +516,12 @@ class JumpTable:
 
         # Iterate over the lines and collect jump targets and branching points.
         for inst in instructions:
-            if inst is None or not inst.is_direct_jump():
+            if inst is None or not inst.is_direct_jump() and  not inst.is_direct_jump2() \
+                and  not inst.is_branch_1():
                 continue
 
+            # print(inst)
+            # print("=====================")
             self.abs_sources[inst.address.abs] = inst.target
             self.abs_destinations.add(inst.target.abs)
 
@@ -480,8 +544,11 @@ class JumpTable:
 
 
 def parse_lines(lines, skip_calls, target_name):  # noqa pylint: disable=unused-argument
+    print("arch : "+target_name)
     if target_name == 'x86':
         target_info = X86TargetInfo()
+    elif target_name == 'riscv':
+        target_info = riscvTargetInfo()
     elif target_name == 'arm':
         target_info = ARMTargetInfo()
     else:
@@ -493,7 +560,8 @@ def parse_lines(lines, skip_calls, target_name):  # noqa pylint: disable=unused-
     for num, line in enumerate(lines, 1):
         fmt, function_name = parse_function_header(line)
         if function_name is not None:
-            assert current_function_name is None, 'we handle only one function for now'
+            # assert current_function_name is None, 'we handle only one function for now'
+            print(function_name)
             if VERBOSE:
                 print(f'New function {function_name} (format {fmt})')
             current_function_name = function_name
@@ -501,6 +569,7 @@ def parse_lines(lines, skip_calls, target_name):  # noqa pylint: disable=unused-
             continue
 
         instruction_or_encoding = parse_line(line, num, current_function_name, current_format, target_info)
+        print(instruction_or_encoding)
         if isinstance(instruction_or_encoding, Encoding):
             # Partial encoding for previous instruction, skip it
             continue
@@ -519,11 +588,36 @@ def parse_lines(lines, skip_calls, target_name):  # noqa pylint: disable=unused-
 
     # Infer target address for jump instructions
     for instruction in instructions:
+        print(instruction)
+        print(instruction.is_direct_jump2())
+        print(instruction.is_branch_1())
+
         if (instruction.target is None or instruction.target.abs is None) \
                 and instruction.is_direct_jump():
             if instruction.target is None:
                 instruction.target = Address(0)
             instruction.target.abs = int(instruction.ops[0], 16)
+        if (instruction.target is None or instruction.target.abs is None) \
+                and instruction.is_direct_jump2():
+            if instruction.target is None:
+                instruction.target = Address(0)
+            instruction.target.abs = int(instruction.ops[1], 16)
+        if (instruction.target is None or instruction.target.abs is None) \
+                and instruction.is_branch_1():
+            if instruction.target is None:
+                instruction.target = Address(0)
+            if(instruction.opcode in ('blez','bnez','beqz')):
+                print("qwe")
+                instruction.target.abs = int(instruction.ops[1], 16)
+            else:
+            # print(instruction.opcode)
+                instruction.target.abs = int(instruction.ops[2], 16)
+            # print("instruction")   
+            # print(instruction)   
+            # print("qweeeeeee")   
+        #         if 
+            # print(instruction_or_encoding)
+    # elif
 
     # Infer relative addresses (for objdump or stripped gdb)
     start_address = instructions[0].address.abs
@@ -534,6 +628,7 @@ def parse_lines(lines, skip_calls, target_name):  # noqa pylint: disable=unused-
                     and address.offset is None \
                     and start_address <= address.abs <= end_address:
                 address.offset = address.abs - start_address
+                # print(address.offset)
 
     if VERBOSE:
         print('Instructions:')
@@ -542,7 +637,7 @@ def parse_lines(lines, skip_calls, target_name):  # noqa pylint: disable=unused-
                 print(f'  {instruction}')
 
     jump_table = JumpTable(instructions)
-
+    
     if VERBOSE:
         print('Absolute destinations:')
         for dst in jump_table.abs_destinations:
@@ -606,13 +701,25 @@ def parse_lines(lines, skip_calls, target_name):  # noqa pylint: disable=unused-
     return current_function_name, basic_blocks
 
 
-def draw_cfg(function_name, basic_blocks, view):
+def draw_cfg(function_name, basic_blocks,function_name2, basic_blocks2, view):
     dot = Digraph(name=function_name, comment=function_name, engine='dot')
     dot.attr('graph', label=function_name)
     for address, basic_block in basic_blocks.items():
         key = str(address)
         dot.node(key, shape='record', label=basic_block.get_label())
     for basic_block in basic_blocks.values():
+        if basic_block.jump_edge:
+            if basic_block.no_jump_edge is not None:
+                dot.edge(f'{basic_block.key}:s0', str(basic_block.no_jump_edge))
+            dot.edge(f'{basic_block.key}:s1', str(basic_block.jump_edge))
+        elif basic_block.no_jump_edge:
+            dot.edge(str(basic_block.key), str(basic_block.no_jump_edge))
+    # dot.attr('graph', label=function_name2)
+
+    for address, basic_block in basic_blocks2.items():
+        key = str(address)
+        dot.node(key, shape='record', label=basic_block.get_label())
+    for basic_block in basic_blocks2.values():
         if basic_block.jump_edge:
             if basic_block.no_jump_edge is not None:
                 dot.edge(f'{basic_block.key}:s0', str(basic_block.no_jump_edge))
