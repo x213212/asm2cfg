@@ -353,3 +353,6 @@ one if existing one does not exist.
 
 If you want to talk to me, you can contact me at Discord with name
 `Kazhuu#3121`.
+
+# Support riscv, add multiple fucntion drawing possibilities
+https://x8795278.blogspot.com/2022/10/rsicv-asm2cfg.html
