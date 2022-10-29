@@ -252,8 +252,8 @@ class riscvTargetInfo:
         # print(instruction)
         return instruction.opcode in ('j', 'jle', 'jl', 'je', 'jne', 'jge','je','jal') and not self.is_call(instruction)
         # return instruction.opcode[0] == 'j'
-    # def is_jump2(self, instruction):
-    #     return instruction.opcode[0] == 'jal'
+        # def is_jump2(self, instruction):
+        # return instruction.opcode[0] == 'jal'
     def is_branch(self, instruction):
         # print(instruction)
         # Various flavors of call:
@@ -346,9 +346,10 @@ class Instruction:
 
     def is_direct_jump(self):
         return self.is_jump() and re.match(fr'{HEX_LONG_PATTERN}', self.ops[0])
-    def is_direct_jump2(self):
+
+    def is_inst_jump(self):
         return self.is_jump() 
-    def is_branch_1(self):
+    def is_inst_branch(self):
         return self.is_branch() 
 
     def is_sink(self):
@@ -516,8 +517,8 @@ class JumpTable:
 
         # Iterate over the lines and collect jump targets and branching points.
         for inst in instructions:
-            if inst is None or not inst.is_direct_jump() and  not inst.is_direct_jump2() \
-                and  not inst.is_branch_1():
+            if inst is None or not inst.is_direct_jump() and  not inst.is_inst_jump() \
+                and  not inst.is_inst_branch():
                 continue
 
             # print(inst)
@@ -589,8 +590,8 @@ def parse_lines(lines, skip_calls, target_name):  # noqa pylint: disable=unused-
     # Infer target address for jump instructions
     for instruction in instructions:
         print(instruction)
-        print(instruction.is_direct_jump2())
-        print(instruction.is_branch_1())
+        print(instruction.is_inst_jump())
+        print(instruction.is_inst_branch())
 
         if (instruction.target is None or instruction.target.abs is None) \
                 and instruction.is_direct_jump():
@@ -598,24 +599,19 @@ def parse_lines(lines, skip_calls, target_name):  # noqa pylint: disable=unused-
                 instruction.target = Address(0)
             instruction.target.abs = int(instruction.ops[0], 16)
         if (instruction.target is None or instruction.target.abs is None) \
-                and instruction.is_direct_jump2():
+                and instruction.is_inst_jump():
             if instruction.target is None:
                 instruction.target = Address(0)
             instruction.target.abs = int(instruction.ops[1], 16)
         if (instruction.target is None or instruction.target.abs is None) \
-                and instruction.is_branch_1():
+                and instruction.is_inst_branch():
             if instruction.target is None:
                 instruction.target = Address(0)
             if(instruction.opcode in ('blez','bnez','beqz')):
-                print("qwe")
                 instruction.target.abs = int(instruction.ops[1], 16)
             else:
-            # print(instruction.opcode)
+         
                 instruction.target.abs = int(instruction.ops[2], 16)
-            # print("instruction")   
-            # print(instruction)   
-            # print("qweeeeeee")   
-        #         if 
             # print(instruction_or_encoding)
     # elif
 
