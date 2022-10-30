@@ -697,31 +697,37 @@ def parse_lines(lines, skip_calls, target_name):  # noqa pylint: disable=unused-
     return current_function_name, basic_blocks
 
 
-def draw_cfg(function_name, basic_blocks,function_name2, basic_blocks2, view):
+# def draw_cfg(function_name, basic_blocks,function_name2, basic_blocks2, view):
+#     dot = Digraph(name=function_name, comment=function_name, engine='dot')
+#     dot.attr('graph', label=function_name)
+#     for address, basic_block in basic_blocks.items():
+#         key = str(address)
+#         dot.node(key, shape='record', label=basic_block.get_label())
+#     for basic_block in basic_blocks.values():
+#         if basic_block.jump_edge:
+#             if basic_block.no_jump_edge is not None:
+#                 dot.edge(f'{basic_block.key}:s0', str(basic_block.no_jump_edge))
+#             dot.edge(f'{basic_block.key}:s1', str(basic_block.jump_edge))
+#         elif basic_block.no_jump_edge:
+#             dot.edge(str(basic_block.key), str(basic_block.no_jump_edge))
+
+def draw_cfg(function_name,get_print_list, view):
+    dot=None
     dot = Digraph(name=function_name, comment=function_name, engine='dot')
     dot.attr('graph', label=function_name)
-    for address, basic_block in basic_blocks.items():
-        key = str(address)
-        dot.node(key, shape='record', label=basic_block.get_label())
-    for basic_block in basic_blocks.values():
-        if basic_block.jump_edge:
-            if basic_block.no_jump_edge is not None:
-                dot.edge(f'{basic_block.key}:s0', str(basic_block.no_jump_edge))
-            dot.edge(f'{basic_block.key}:s1', str(basic_block.jump_edge))
-        elif basic_block.no_jump_edge:
-            dot.edge(str(basic_block.key), str(basic_block.no_jump_edge))
-    # dot.attr('graph', label=function_name2)
-
-    for address, basic_block in basic_blocks2.items():
-        key = str(address)
-        dot.node(key, shape='record', label=basic_block.get_label())
-    for basic_block in basic_blocks2.values():
-        if basic_block.jump_edge:
-            if basic_block.no_jump_edge is not None:
-                dot.edge(f'{basic_block.key}:s0', str(basic_block.no_jump_edge))
-            dot.edge(f'{basic_block.key}:s1', str(basic_block.jump_edge))
-        elif basic_block.no_jump_edge:
-            dot.edge(str(basic_block.key), str(basic_block.no_jump_edge))
+    for get_child in get_print_list:
+        # for address, basic_block in x[1].items:
+        #     print(address)
+        for address, basic_block in get_child[1].items():
+            key = str(address)
+            dot.node(key, shape='record', label=basic_block.get_label())
+        for basic_block in  get_child[1].values():
+            if basic_block.jump_edge:
+                if basic_block.no_jump_edge is not None:
+                    dot.edge(f'{basic_block.key}:s0', str(basic_block.no_jump_edge))
+                dot.edge(f'{basic_block.key}:s1', str(basic_block.jump_edge))
+            elif basic_block.no_jump_edge:
+                dot.edge(str(basic_block.key), str(basic_block.no_jump_edge))
     if view:
         dot.format = 'gv'
         with tempfile.NamedTemporaryFile(mode='w+b', prefix=function_name) as filename:
@@ -731,3 +737,4 @@ def draw_cfg(function_name, basic_blocks,function_name2, basic_blocks2, view):
         dot.format = 'pdf'
         dot.render(filename=function_name, cleanup=True)
         print(f'Saved CFG to a file {function_name}.{dot.format}')
+

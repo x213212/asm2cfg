@@ -22,10 +22,18 @@ def main():
                         help='View as a dot graph instead of saving to a file')
     args = parser.parse_args()
     print('If function CFG rendering takes too long, try to skip function calls with -c flag')
-    lines = asm2cfg.read_lines(args.assembly_file)
-    function_name, basic_blocks = asm2cfg.parse_lines(lines, args.skip_calls, args.target)
-
+    get_print_list =[]
+    get_asm_file=[]
+    
+    # lines = asm2cfg.read_lines(args.assembly_file)
+    lines = asm2cfg.read_lines("/root/asm2cfg/a.asm")
+    get_asm_file.append(lines)
     lines2 = asm2cfg.read_lines("/root/asm2cfg/a2.asm")
-    function_name2, basic_blocks2 = asm2cfg.parse_lines(lines2, args.skip_calls, args.target)
+    get_asm_file.append(lines2)
+    for asm in get_asm_file:
+        function_name, basic_blocks = asm2cfg.parse_lines(asm, args.skip_calls, args.target)
+        get_print_list.append(  [function_name, basic_blocks ])
+
     print("start draw")
-    asm2cfg.draw_cfg(function_name, basic_blocks,function_name2, basic_blocks2, args.view)
+
+    asm2cfg.draw_cfg(function_name,get_print_list, args.view)
