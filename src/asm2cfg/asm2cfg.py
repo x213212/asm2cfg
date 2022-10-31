@@ -245,7 +245,7 @@ class riscvTargetInfo:
         #   call   0x555555555542
         #   addr32 call 0x55555558add0
         return instruction.opcode in ('call')\
-            and instruction.opcode not in ('beq', 'bne', 'blt', 'bge', 'bltu', 'bgeu','blez','bnez','beqz')
+            and instruction.opcode not in ('beq', 'bne', 'blt', 'bge', 'bltu', 'bgeu','blez','bnez','beqz','bnec','bgtz','bgez','bltz')
 
     def is_jump(self, instruction):
         
@@ -260,7 +260,17 @@ class riscvTargetInfo:
         #   call   *0x26a16(%rip)
         #   call   0x555555555542
         #   addr32 call 0x55555558add0
-        return instruction.opcode in ('beq', 'bne', 'blt', 'bge', 'bltu', 'bgeu','blez','bnez','beqz')
+        return instruction.opcode in ('beq', 'bne', 'blt', 'bge', 'bltu', 'bgeu','blez','bnez','beqz','bnec','bgtz','bgez','bltz')
+    
+    def is_compressbranch(self, instruction):
+        # print(instruction)
+        # Various flavors of call:
+        #   call   *0x26a16(%rip)
+        #   call   0x555555555542
+        #   addr32 call 0x55555558add0
+        return instruction.opcode in ('c.beq', 'c.bne', 'c.blt', 'c.bge', 'c.bltu', 'c.bgeu','c.blez','c.bnez','c.beqz','c.bnec')
+
+
     def is_unconditional_jump(self, instruction):
         
         return instruction.opcode.startswith('jmp') 
@@ -349,8 +359,12 @@ class Instruction:
 
     def is_inst_jump(self):
         return self.is_jump() 
+
     def is_inst_branch(self):
         return self.is_branch() 
+        
+    def is_compressbranch(self):
+        return self.info.is_compressbranch(self)
 
     def is_sink(self):
         return self.info.is_sink(self)
@@ -518,7 +532,7 @@ class JumpTable:
         # Iterate over the lines and collect jump targets and branching points.
         for inst in instructions:
             if inst is None or not inst.is_direct_jump() and  not inst.is_inst_jump() \
-                and  not inst.is_inst_branch():
+                and  not inst.is_inst_branch() and not inst.is_compressbranch():
                 continue
 
             # print(inst)
@@ -607,10 +621,17 @@ def parse_lines(lines, skip_calls, target_name):  # noqa pylint: disable=unused-
                 and instruction.is_inst_branch():
             if instruction.target is None:
                 instruction.target = Address(0)
-            if(instruction.opcode in ('blez','bnez','beqz')):
+            if(instruction.opcode in ('beqz','bnez','blez','bgez','bltz','bgtz')):
                 instruction.target.abs = int(instruction.ops[1], 16)
             else:
-         
+                instruction.target.abs = int(instruction.ops[2], 16)
+        if (instruction.target is None or instruction.target.abs is None) \
+                and instruction.is_compressbranch():
+            if instruction.target is None:
+                instruction.target = Address(0)
+            if(instruction.opcode in ('c.blez','c.bnez','c.beqz')):
+                instruction.target.abs = int(instruction.ops[1], 16)
+            else:
                 instruction.target.abs = int(instruction.ops[2], 16)
             # print(instruction_or_encoding)
     # elif
@@ -731,10 +752,10 @@ def draw_cfg(function_name,get_print_list, view):
     if view:
         dot.format = 'gv'
         with tempfile.NamedTemporaryFile(mode='w+b', prefix=function_name) as filename:
-            dot.view(filename.name)
+            # dot.view(filename.name)
             print(f'Opening a file {filename.name}.{dot.format} with default viewer. Don\'t forget to delete it later.')
     else:
-        dot.format = 'pdf'
+        dot.format = 'svg'
         dot.render(filename=function_name, cleanup=True)
         print(f'Saved CFG to a file {function_name}.{dot.format}')
 
