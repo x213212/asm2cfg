@@ -26,9 +26,9 @@ def main():
     get_asm_file=[]
     
     # lines = asm2cfg.read_lines(args.assembly_file)
-    lines = asm2cfg.read_lines("/root/asm2cfg/a.asm")
+    lines = asm2cfg.read_lines("/root/x21321219/asm2cfg/a.asm")
     get_asm_file.append(lines)
-    lines2 = asm2cfg.read_lines("/root/asm2cfg/a2.asm")
+    lines2 = asm2cfg.read_lines("/root/x21321219/asm2cfg/a2.asm")
     get_asm_file.append(lines2)
     for asm in get_asm_file:
         function_name, basic_blocks = asm2cfg.parse_lines(asm, args.skip_calls, args.target)

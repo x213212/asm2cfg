@@ -765,6 +765,7 @@ def dfs(visited, graph, node,search):  #function for dfs
         if node in graph:
             for neighbour in graph[node]:
                 dfs(visited, graph, neighbour,search)
+                # v.append(neighbour)
 colors = ['green','red']
 
 def draw_cfg(function_name,get_print_list, view):
@@ -788,7 +789,7 @@ def draw_cfg(function_name,get_print_list, view):
             tmp =[i.text for i in basic_block.instructions]
             print(tmp)
             for x in tmp:
-                if "whetstones.constprop.0+0x2a0" in x:
+                if "<whetstones+0xb84>" in x:
                         print([i.text for i in basic_block.instructions])
                         find.append(str(basic_block.key))
 
@@ -798,8 +799,8 @@ def draw_cfg(function_name,get_print_list, view):
     print(graph)
     # visited.add('722')
     for y in find:
-        dfs(visited, graph,'722', str(y))
-    print(t)
+        dfs(visited, graph,'936', str(y))
+    # print(t)
 
     for get_child in get_print_list:
         # for address, basic_block in x[1].items:
@@ -814,10 +815,19 @@ def draw_cfg(function_name,get_print_list, view):
         for basic_block in  get_child[1].values():
             if basic_block.jump_edge:
                 if basic_block.no_jump_edge is not None:
-                    dot.edge(f'{basic_block.key}:s0', str(basic_block.no_jump_edge))
-                dot.edge(f'{basic_block.key}:s1', str(basic_block.jump_edge))
+                    if str(basic_block.no_jump_edge) in t:
+                        dot.edge(f'{basic_block.key}:s0', str(basic_block.no_jump_edge),color=colors[1])
+                    else :
+                        dot.edge(f'{basic_block.key}:s0', str(basic_block.no_jump_edge))
+                if str(basic_block.jump_edge) in t:        
+                    dot.edge(f'{basic_block.key}:s1', str(basic_block.jump_edge),color=colors[1])
+                else:
+                    dot.edge(f'{basic_block.key}:s1', str(basic_block.jump_edge))
             elif basic_block.no_jump_edge:
-                dot.edge(str(basic_block.key), str(basic_block.no_jump_edge))
+                if str(basic_block.no_jump_edge) in t:
+                    dot.edge(str(basic_block.key), str(basic_block.no_jump_edge),color=colors[1])
+                else:
+                    dot.edge(str(basic_block.key), str(basic_block.no_jump_edge))
                 
     if view:
         dot.format = 'gv'
