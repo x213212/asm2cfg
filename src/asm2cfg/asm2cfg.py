@@ -789,7 +789,7 @@ def draw_cfg(function_name,get_print_list, view):
             tmp =[i.text for i in basic_block.instructions]
             print(tmp)
             for x in tmp:
-                if "<whetstones+0xb84>" in x:
+                if "343a669 <_stack+0x321a669>" in x:
                         print([i.text for i in basic_block.instructions])
                         find.append(str(basic_block.key))
 
