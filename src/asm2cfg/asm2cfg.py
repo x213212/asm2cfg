@@ -732,16 +732,78 @@ def parse_lines(lines, skip_calls, target_name):  # noqa pylint: disable=unused-
 #         elif basic_block.no_jump_edge:
 #             dot.edge(str(basic_block.key), str(basic_block.no_jump_edge))
 
+# Serach
+
+
+# Driver Code
+print("Following is the Depth-First Search")
+# graph['a'] =[]
+# print(graph)
+# graph['a'] =['q']
+# print(graph)
+# graph['a'].append('w')
+# print(graph)
+# dfs(visited, graph, 'a')
+# Using a Python dictionary to act as an adjacency list
+graph = {
+
+}
+visited = set() # Set to keep track of visited nodes of graph.
+v=[]
+def dfs(visited, graph, node):  #function for dfs 
+    if node not in visited:
+        print (node)
+        v.append(node)
+        # print (type(node))
+        visited.add(node)
+        if node in graph:
+            for neighbour in graph[node]:
+                dfs(visited, graph, neighbour)
+colors = ['green','red']
+
 def draw_cfg(function_name,get_print_list, view):
     dot=None
     dot = Digraph(name=function_name, comment=function_name, engine='dot')
+    # dot.graph_attr['rankdir'] = 'LR'
     dot.attr('graph', label=function_name)
+    find = []
+    for get_child in get_print_list:
+        for address, basic_block in get_child[1].items():
+            key = str(address)
+            graph[key] =[]
+        for basic_block in  get_child[1].values():
+            if basic_block.jump_edge:
+                if basic_block.no_jump_edge is not None:
+                    graph[str(basic_block.key)].append(str(basic_block.no_jump_edge))
+                graph[str(basic_block.key)].append(str(basic_block.jump_edge))
+            elif basic_block.no_jump_edge:
+                graph[str(basic_block.key)].append(str(basic_block.no_jump_edge))
+            # disable for Serach
+            tmp =[i.text for i in basic_block.instructions]
+            print(tmp)
+            for x in tmp:
+                if "<whetstones.constprop.0+0x2a4>" in x:
+                        print([i.text for i in basic_block.instructions])
+                        find.append(str(basic_block.key))
+
+    
+    print("Following is the Depth-First Search")
+    print(find)
+
+    for y in find:
+        dfs(visited, graph, str( y))
+        print(v)
+
     for get_child in get_print_list:
         # for address, basic_block in x[1].items:
         #     print(address)
         for address, basic_block in get_child[1].items():
             key = str(address)
-            dot.node(key, shape='record', label=basic_block.get_label())
+            graph[key] =[]
+            if key in v:
+                dot.node(key, shape='record', label=basic_block.get_label(),  style="filled",fillcolor=colors[0])
+            else:
+                dot.node(key, shape='record', label=basic_block.get_label())
         for basic_block in  get_child[1].values():
             if basic_block.jump_edge:
                 if basic_block.no_jump_edge is not None:
@@ -749,6 +811,7 @@ def draw_cfg(function_name,get_print_list, view):
                 dot.edge(f'{basic_block.key}:s1', str(basic_block.jump_edge))
             elif basic_block.no_jump_edge:
                 dot.edge(str(basic_block.key), str(basic_block.no_jump_edge))
+                
     if view:
         dot.format = 'gv'
         with tempfile.NamedTemporaryFile(mode='w+b', prefix=function_name) as filename:
