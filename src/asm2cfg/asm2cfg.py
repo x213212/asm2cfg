@@ -5,6 +5,7 @@ Module containing main building blocks to parse assembly and draw CFGs.
 import re
 import sys
 import tempfile
+from xml.sax import xmlreader
 
 from graphviz import Digraph
 
@@ -750,15 +751,20 @@ graph = {
 }
 visited = set() # Set to keep track of visited nodes of graph.
 v=[]
-def dfs(visited, graph, node):  #function for dfs 
+t=[]
+def dfs(visited, graph, node,search):  #function for dfs 
     if node not in visited:
         print (node)
         v.append(node)
+        if(search == node): 
+            print("find")
+            for x in v:
+                t.append(x)
         # print (type(node))
         visited.add(node)
         if node in graph:
             for neighbour in graph[node]:
-                dfs(visited, graph, neighbour)
+                dfs(visited, graph, neighbour,search)
 colors = ['green','red']
 
 def draw_cfg(function_name,get_print_list, view):
@@ -782,17 +788,18 @@ def draw_cfg(function_name,get_print_list, view):
             tmp =[i.text for i in basic_block.instructions]
             print(tmp)
             for x in tmp:
-                if "<whetstones.constprop.0+0x2a4>" in x:
+                if "whetstones.constprop.0+0x2a0" in x:
                         print([i.text for i in basic_block.instructions])
                         find.append(str(basic_block.key))
 
     
     print("Following is the Depth-First Search")
     print(find)
-
+    print(graph)
+    # visited.add('722')
     for y in find:
-        dfs(visited, graph, str( y))
-        print(v)
+        dfs(visited, graph,'722', str(y))
+    print(t)
 
     for get_child in get_print_list:
         # for address, basic_block in x[1].items:
@@ -800,7 +807,7 @@ def draw_cfg(function_name,get_print_list, view):
         for address, basic_block in get_child[1].items():
             key = str(address)
             graph[key] =[]
-            if key in v:
+            if key in t:
                 dot.node(key, shape='record', label=basic_block.get_label(),  style="filled",fillcolor=colors[0])
             else:
                 dot.node(key, shape='record', label=basic_block.get_label())
