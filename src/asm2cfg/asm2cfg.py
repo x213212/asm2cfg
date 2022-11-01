@@ -752,21 +752,24 @@ graph = {
 visited = set() # Set to keep track of visited nodes of graph.
 v=[]
 t=[]
+find_block=0
 def dfs(visited, graph, node,search):  #function for dfs 
     if node not in visited:
         print (node)
         v.append(node)
         if(search == node): 
             print("find")
+            find_block = int(node)
             for x in v:
                 t.append(x)
+            return
         # print (type(node))
         visited.add(node)
         if node in graph:
             for neighbour in graph[node]:
                 dfs(visited, graph, neighbour,search)
                 # v.append(neighbour)
-colors = ['green','red']
+colors = ['green','blue','red','purple']
 
 def draw_cfg(function_name,get_print_list, view):
     dot=None
@@ -808,6 +811,7 @@ def draw_cfg(function_name,get_print_list, view):
         for address, basic_block in get_child[1].items():
             key = str(address)
             graph[key] =[]
+   
             if key in t:
                 dot.node(key, shape='record', label=basic_block.get_label(),  style="filled",fillcolor=colors[0])
             else:
@@ -816,16 +820,28 @@ def draw_cfg(function_name,get_print_list, view):
             if basic_block.jump_edge:
                 if basic_block.no_jump_edge is not None:
                     if str(basic_block.no_jump_edge) in t:
-                        dot.edge(f'{basic_block.key}:s0', str(basic_block.no_jump_edge),color=colors[1])
+                        if( find_block < int(basic_block.no_jump_edge)):
+                            dot.edge(f'{basic_block.key}:s0', str(basic_block.no_jump_edge),color=colors[1])
+                        else:
+                            dot.edge(f'{basic_block.key}:s0', str(basic_block.no_jump_edge))    
                     else :
                         dot.edge(f'{basic_block.key}:s0', str(basic_block.no_jump_edge))
-                if str(basic_block.jump_edge) in t:        
-                    dot.edge(f'{basic_block.key}:s1', str(basic_block.jump_edge),color=colors[1])
+                if str(basic_block.jump_edge) in t:         
+                    if( find_block < int(basic_block.jump_edge) and   find_block < int(address)):
+                        if( int(basic_block.key) == int(basic_block.jump_edge) ):
+                            dot.edge(f'{basic_block.key}:s1', str(basic_block.jump_edge),color=colors[3])
+                        else:
+                            dot.edge(f'{basic_block.key}:s1', str(basic_block.jump_edge),color=colors[2])
+                    else:
+                        dot.edge(f'{basic_block.key}:s1', str(basic_block.jump_edge))
                 else:
                     dot.edge(f'{basic_block.key}:s1', str(basic_block.jump_edge))
             elif basic_block.no_jump_edge:
                 if str(basic_block.no_jump_edge) in t:
-                    dot.edge(str(basic_block.key), str(basic_block.no_jump_edge),color=colors[1])
+                    if( find_block < int(basic_block.no_jump_edge)):
+                        dot.edge(str(basic_block.key), str(basic_block.no_jump_edge),color=colors[1])
+                    else:
+                        dot.edge(str(basic_block.key), str(basic_block.no_jump_edge))
                 else:
                     dot.edge(str(basic_block.key), str(basic_block.no_jump_edge))
                 
