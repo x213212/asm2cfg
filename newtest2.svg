@@ -14,12 +14,12 @@
 <g id="node1" class="node">
 <title>1000000</title>
 <polygon fill="green" stroke="black" points="1526.76,-10430.5 1526.76,-13071.5 2176.76,-13071.5 2176.76,-10430.5 1526.76,-10430.5"/>
-<text text-anchor="start" x="1534.76" y="-13056.3" font-family="Times,serif" font-size="14.00">debug * Notes: interleaves PCM samples LRLRLR...</text>
-<text text-anchor="start" x="1534.76" y="-13041.3" font-family="Times,serif" font-size="14.00">debug *</text>
-<text text-anchor="start" x="1534.76" y="-13026.3" font-family="Times,serif" font-size="14.00">debug * TODO: add 32&#45;bit version for platforms where 64&#45;bit mul&#45;acc is not supported</text>
-<text text-anchor="start" x="1534.76" y="-13011.3" font-family="Times,serif" font-size="14.00">debug **************************************************************************************/</text>
-<text text-anchor="start" x="1534.76" y="-12996.3" font-family="Times,serif" font-size="14.00">debugvoid PolyphaseStereo(short *pcm, int *vbuf, const int *coefBase)</text>
-<text text-anchor="start" x="1534.76" y="-12981.3" font-family="Times,serif" font-size="14.00">debug{</text>
+<text text-anchor="start" x="1534.76" y="-13056.3" font-family="Times,serif" font-size="14.00" fill='red'> * Notes: interleaves PCM samples LRLRLR...</text>
+<text text-anchor="start" x="1534.76" y="-13041.3" font-family="Times,serif" font-size="14.00" fill='red'> *</text>
+<text text-anchor="start" x="1534.76" y="-13026.3" font-family="Times,serif" font-size="14.00" fill='red'> * TODO: add 32&#45;bit version for platforms where 64&#45;bit mul&#45;acc is not supported</text>
+<text text-anchor="start" x="1534.76" y="-13011.3" font-family="Times,serif" font-size="14.00" fill='red'> **************************************************************************************/</text>
+<text text-anchor="start" x="1534.76" y="-12996.3" font-family="Times,serif" font-size="14.00" fill='red'>void PolyphaseStereo(short *pcm, int *vbuf, const int *coefBase)</text>
+<text text-anchor="start" x="1534.76" y="-12981.3" font-family="Times,serif" font-size="14.00" fill='red'>{</text>
 <text text-anchor="start" x="1534.76" y="-12966.3" font-family="Times,serif" font-size="14.00">c.addi16sp sp,&#45;256</text>
 <text text-anchor="start" x="1534.76" y="-12951.3" font-family="Times,serif" font-size="14.00">c.sdsp s0,248(sp)</text>
 <text text-anchor="start" x="1534.76" y="-12936.3" font-family="Times,serif" font-size="14.00">lw s0,208(a1)</text>
@@ -50,12 +50,12 @@
 <text text-anchor="start" x="1534.76" y="-12561.3" font-family="Times,serif" font-size="14.00">lw s10,216(a1)</text>
 <text text-anchor="start" x="1534.76" y="-12546.3" font-family="Times,serif" font-size="14.00">lw s9,136(a1)</text>
 <text text-anchor="start" x="1534.76" y="-12531.3" font-family="Times,serif" font-size="14.00">lw s7,140(a1)</text>
-<text text-anchor="start" x="1534.76" y="-12516.3" font-family="Times,serif" font-size="14.00">debug ps0(pcm, vb1, coef);</text>
-<text text-anchor="start" x="1534.76" y="-12501.3" font-family="Times,serif" font-size="14.00">debug#else</text>
-<text text-anchor="start" x="1534.76" y="-12486.3" font-family="Times,serif" font-size="14.00">debug sum1L = sum1R = rndVal;</text>
-<text text-anchor="start" x="1534.76" y="-12471.3" font-family="Times,serif" font-size="14.00">debug MC0S(0)</text>
+<text text-anchor="start" x="1534.76" y="-12516.3" font-family="Times,serif" font-size="14.00" fill='red'> ps0(pcm, vb1, coef);</text>
+<text text-anchor="start" x="1534.76" y="-12501.3" font-family="Times,serif" font-size="14.00" fill='red'>#else</text>
+<text text-anchor="start" x="1534.76" y="-12486.3" font-family="Times,serif" font-size="14.00" fill='red'> sum1L = sum1R = rndVal;</text>
+<text text-anchor="start" x="1534.76" y="-12471.3" font-family="Times,serif" font-size="14.00" fill='red'> MC0S(0)</text>
 <text text-anchor="start" x="1534.76" y="-12456.3" font-family="Times,serif" font-size="14.00">lw t0,4(a2)</text>
-<text text-anchor="start" x="1534.76" y="-12441.3" font-family="Times,serif" font-size="14.00">debug MC0S(1)</text>
+<text text-anchor="start" x="1534.76" y="-12441.3" font-family="Times,serif" font-size="14.00" fill='red'> MC0S(1)</text>
 <text text-anchor="start" x="1534.76" y="-12426.3" font-family="Times,serif" font-size="14.00">lw t5,12(a2)</text>
 <text text-anchor="start" x="1534.76" y="-12411.3" font-family="Times,serif" font-size="14.00">lw s8,212(a1)</text>
 <text text-anchor="start" x="1534.76" y="-12396.3" font-family="Times,serif" font-size="14.00">c.sdsp s1,8(sp)</text>
@@ -174,17 +174,17 @@
 <text text-anchor="start" x="1534.76" y="-10701.3" font-family="Times,serif" font-size="14.00">mul s11,t4,s8</text>
 <text text-anchor="start" x="1534.76" y="-10686.3" font-family="Times,serif" font-size="14.00">add a5,t1,a3</text>
 <text text-anchor="start" x="1534.76" y="-10671.3" font-family="Times,serif" font-size="14.00">add a4,a6,t2</text>
-<text text-anchor="start" x="1534.76" y="-10656.3" font-family="Times,serif" font-size="14.00">debug MC0S(4)</text>
-<text text-anchor="start" x="1534.76" y="-10641.3" font-family="Times,serif" font-size="14.00">debug MC0S(5)</text>
-<text text-anchor="start" x="1534.76" y="-10626.3" font-family="Times,serif" font-size="14.00">debug MC0S(6)</text>
-<text text-anchor="start" x="1534.76" y="-10611.3" font-family="Times,serif" font-size="14.00">debug MC0S(7)</text>
-<text text-anchor="start" x="1534.76" y="-10596.3" font-family="Times,serif" font-size="14.00">debug *(pcm + 0) = ClipToShort((int)SAR64(sum1L, (32 &#45; CSHIFT)), DEF_NFRACBITS);</text>
+<text text-anchor="start" x="1534.76" y="-10656.3" font-family="Times,serif" font-size="14.00" fill='red'> MC0S(4)</text>
+<text text-anchor="start" x="1534.76" y="-10641.3" font-family="Times,serif" font-size="14.00" fill='red'> MC0S(5)</text>
+<text text-anchor="start" x="1534.76" y="-10626.3" font-family="Times,serif" font-size="14.00" fill='red'> MC0S(6)</text>
+<text text-anchor="start" x="1534.76" y="-10611.3" font-family="Times,serif" font-size="14.00" fill='red'> MC0S(7)</text>
+<text text-anchor="start" x="1534.76" y="-10596.3" font-family="Times,serif" font-size="14.00" fill='red'> *(pcm + 0) = ClipToShort((int)SAR64(sum1L, (32 &#45; CSHIFT)), DEF_NFRACBITS);</text>
 <text text-anchor="start" x="1534.76" y="-10581.3" font-family="Times,serif" font-size="14.00">bfos s4,a4,51,20</text>
 <text text-anchor="start" x="1534.76" y="-10566.3" font-family="Times,serif" font-size="14.00">add s8,a5,s10</text>
 <text text-anchor="start" x="1534.76" y="-10551.3" font-family="Times,serif" font-size="14.00">add t0,s8,s5</text>
-<text text-anchor="start" x="1534.76" y="-10536.3" font-family="Times,serif" font-size="14.00">debug sign = x &gt;&gt; 31;</text>
+<text text-anchor="start" x="1534.76" y="-10536.3" font-family="Times,serif" font-size="14.00" fill='red'> sign = x &gt;&gt; 31;</text>
 <text text-anchor="start" x="1534.76" y="-10521.3" font-family="Times,serif" font-size="14.00">sraiw t3,s4,0x1f</text>
-<text text-anchor="start" x="1534.76" y="-10506.3" font-family="Times,serif" font-size="14.00">debug if (sign != (x &gt;&gt; 15))</text>
+<text text-anchor="start" x="1534.76" y="-10506.3" font-family="Times,serif" font-size="14.00" fill='red'> if (sign != (x &gt;&gt; 15))</text>
 <text text-anchor="start" x="1534.76" y="-10491.3" font-family="Times,serif" font-size="14.00">sraiw s0,s4,0x15</text>
 <text text-anchor="start" x="1534.76" y="-10476.3" font-family="Times,serif" font-size="14.00">add a7,t0,s11</text>
 <text text-anchor="start" x="1534.76" y="-10461.3" font-family="Times,serif" font-size="14.00">beq s0,t3,ae84 &lt;xmp3_PolyphaseStereo+0x7ac&gt;</text>
@@ -197,20 +197,20 @@
 <g id="node2" class="node">
 <title>1000018</title>
 <polygon fill="green" stroke="black" points="1360.76,-10137.5 1360.76,-10393.5 2004.76,-10393.5 2004.76,-10137.5 1360.76,-10137.5"/>
-<text text-anchor="start" x="1368.76" y="-10378.3" font-family="Times,serif" font-size="14.00">debug x = sign ^ ((1 &lt;&lt; 15) &#45; 1);</text>
+<text text-anchor="start" x="1368.76" y="-10378.3" font-family="Times,serif" font-size="14.00" fill='red'> x = sign ^ ((1 &lt;&lt; 15) &#45; 1);</text>
 <text text-anchor="start" x="1368.76" y="-10363.3" font-family="Times,serif" font-size="14.00">lui s6,0x8</text>
 <text text-anchor="start" x="1368.76" y="-10348.3" font-family="Times,serif" font-size="14.00">addi s3,s6,&#45;1 # 7fff &lt;xmp3_UnpackScaleFactors+0x673&gt;</text>
-<text text-anchor="start" x="1368.76" y="-10333.3" font-family="Times,serif" font-size="14.00">debug *(pcm + 1) = ClipToShort((int)SAR64(sum1R, (32 &#45; CSHIFT)), DEF_NFRACBITS);</text>
+<text text-anchor="start" x="1368.76" y="-10333.3" font-family="Times,serif" font-size="14.00" fill='red'> *(pcm + 1) = ClipToShort((int)SAR64(sum1R, (32 &#45; CSHIFT)), DEF_NFRACBITS);</text>
 <text text-anchor="start" x="1368.76" y="-10318.3" font-family="Times,serif" font-size="14.00">bfos t2,a7,51,20</text>
-<text text-anchor="start" x="1368.76" y="-10303.3" font-family="Times,serif" font-size="14.00">debug x = sign ^ ((1 &lt;&lt; 15) &#45; 1);</text>
+<text text-anchor="start" x="1368.76" y="-10303.3" font-family="Times,serif" font-size="14.00" fill='red'> x = sign ^ ((1 &lt;&lt; 15) &#45; 1);</text>
 <text text-anchor="start" x="1368.76" y="-10288.3" font-family="Times,serif" font-size="14.00">xor a3,t3,s3</text>
-<text text-anchor="start" x="1368.76" y="-10273.3" font-family="Times,serif" font-size="14.00">debug sign = x &gt;&gt; 31;</text>
+<text text-anchor="start" x="1368.76" y="-10273.3" font-family="Times,serif" font-size="14.00" fill='red'> sign = x &gt;&gt; 31;</text>
 <text text-anchor="start" x="1368.76" y="-10258.3" font-family="Times,serif" font-size="14.00">sraiw t6,t2,0x1f</text>
-<text text-anchor="start" x="1368.76" y="-10243.3" font-family="Times,serif" font-size="14.00">debug if (sign != (x &gt;&gt; 15))</text>
+<text text-anchor="start" x="1368.76" y="-10243.3" font-family="Times,serif" font-size="14.00" fill='red'> if (sign != (x &gt;&gt; 15))</text>
 <text text-anchor="start" x="1368.76" y="-10228.3" font-family="Times,serif" font-size="14.00">sraiw s1,t2,0x15</text>
-<text text-anchor="start" x="1368.76" y="-10213.3" font-family="Times,serif" font-size="14.00">debug return (short)x;</text>
+<text text-anchor="start" x="1368.76" y="-10213.3" font-family="Times,serif" font-size="14.00" fill='red'> return (short)x;</text>
 <text text-anchor="start" x="1368.76" y="-10198.3" font-family="Times,serif" font-size="14.00">sh a3,0(a0)</text>
-<text text-anchor="start" x="1368.76" y="-10183.3" font-family="Times,serif" font-size="14.00">debug if (sign != (x &gt;&gt; 15))</text>
+<text text-anchor="start" x="1368.76" y="-10183.3" font-family="Times,serif" font-size="14.00" fill='red'> if (sign != (x &gt;&gt; 15))</text>
 <text text-anchor="start" x="1368.76" y="-10168.3" font-family="Times,serif" font-size="14.00">beq s1,t6,ae9c &lt;xmp3_PolyphaseStereo+0x7c4&gt;</text>
 <polyline fill="none" stroke="black" points="1360.76,-10160.5 2004.76,-10160.5 "/>
 <text text-anchor="middle" x="1527.76" y="-10145.3" font-family="Times,serif" font-size="14.00">No Jump</text>
@@ -228,15 +228,15 @@
 <title>44676</title>
 <polygon fill="none" stroke="black" points="1636.76,-194.5 1636.76,-390.5 2004.76,-390.5 2004.76,-194.5 1636.76,-194.5"/>
 <text text-anchor="start" x="1644.76" y="-375.3" font-family="Times,serif" font-size="14.00">bfos t2,a7,51,20</text>
-<text text-anchor="start" x="1644.76" y="-360.3" font-family="Times,serif" font-size="14.00">debug x &gt;&gt;= fracBits;</text>
+<text text-anchor="start" x="1644.76" y="-360.3" font-family="Times,serif" font-size="14.00" fill='red'> x &gt;&gt;= fracBits;</text>
 <text text-anchor="start" x="1644.76" y="-345.3" font-family="Times,serif" font-size="14.00">sraiw a3,s4,0x6</text>
-<text text-anchor="start" x="1644.76" y="-330.3" font-family="Times,serif" font-size="14.00">debug sign = x &gt;&gt; 31;</text>
+<text text-anchor="start" x="1644.76" y="-330.3" font-family="Times,serif" font-size="14.00" fill='red'> sign = x &gt;&gt; 31;</text>
 <text text-anchor="start" x="1644.76" y="-315.3" font-family="Times,serif" font-size="14.00">sraiw t6,t2,0x1f</text>
-<text text-anchor="start" x="1644.76" y="-300.3" font-family="Times,serif" font-size="14.00">debug if (sign != (x &gt;&gt; 15))</text>
+<text text-anchor="start" x="1644.76" y="-300.3" font-family="Times,serif" font-size="14.00" fill='red'> if (sign != (x &gt;&gt; 15))</text>
 <text text-anchor="start" x="1644.76" y="-285.3" font-family="Times,serif" font-size="14.00">sraiw s1,t2,0x15</text>
-<text text-anchor="start" x="1644.76" y="-270.3" font-family="Times,serif" font-size="14.00">debug return (short)x;</text>
+<text text-anchor="start" x="1644.76" y="-270.3" font-family="Times,serif" font-size="14.00" fill='red'> return (short)x;</text>
 <text text-anchor="start" x="1644.76" y="-255.3" font-family="Times,serif" font-size="14.00">sh a3,0(a0)</text>
-<text text-anchor="start" x="1644.76" y="-240.3" font-family="Times,serif" font-size="14.00">debug if (sign != (x &gt;&gt; 15))</text>
+<text text-anchor="start" x="1644.76" y="-240.3" font-family="Times,serif" font-size="14.00" fill='red'> if (sign != (x &gt;&gt; 15))</text>
 <text text-anchor="start" x="1644.76" y="-225.3" font-family="Times,serif" font-size="14.00">bne s1,t6,a8fc &lt;xmp3_PolyphaseStereo+0x224&gt;</text>
 <polyline fill="none" stroke="black" points="1636.76,-217.5 2004.76,-217.5 "/>
 <text text-anchor="middle" x="1734.76" y="-202.3" font-family="Times,serif" font-size="14.00">No Jump</text>
@@ -253,7 +253,7 @@
 <g id="node4" class="node">
 <title>1000025</title>
 <polygon fill="green" stroke="black" points="1400.76,-10064.5 1400.76,-10100.5 1654.76,-10100.5 1654.76,-10064.5 1400.76,-10064.5"/>
-<text text-anchor="start" x="1408.76" y="-10078.8" font-family="Times,serif" font-size="14.00">debug x = sign ^ ((1 &lt;&lt; 15) &#45; 1);</text>
+<text text-anchor="start" x="1408.76" y="-10078.8" font-family="Times,serif" font-size="14.00" fill='red'> x = sign ^ ((1 &lt;&lt; 15) &#45; 1);</text>
 </g>
 <!-- 1000018&#45;&gt;1000025 -->
 <g id="edge3" class="edge">
@@ -283,11 +283,11 @@
 <text text-anchor="start" x="1316.76" y="-10012.3" font-family="Times,serif" font-size="14.00">lui s2,0x8</text>
 <text text-anchor="start" x="1316.76" y="-9997.3" font-family="Times,serif" font-size="14.00">addi s10,s2,&#45;1 # 7fff &lt;xmp3_UnpackScaleFactors+0x673&gt;</text>
 <text text-anchor="start" x="1316.76" y="-9982.3" font-family="Times,serif" font-size="14.00">xor s9,t6,s10</text>
-<text text-anchor="start" x="1316.76" y="-9967.3" font-family="Times,serif" font-size="14.00">debug#if 0</text>
-<text text-anchor="start" x="1316.76" y="-9952.3" font-family="Times,serif" font-size="14.00">debug ps1(pcm, vb1, coef);</text>
-<text text-anchor="start" x="1316.76" y="-9937.3" font-family="Times,serif" font-size="14.00">debug#else</text>
-<text text-anchor="start" x="1316.76" y="-9922.3" font-family="Times,serif" font-size="14.00">debug sum1L = sum1R = rndVal;</text>
-<text text-anchor="start" x="1316.76" y="-9907.3" font-family="Times,serif" font-size="14.00">debug MC1S(0)</text>
+<text text-anchor="start" x="1316.76" y="-9967.3" font-family="Times,serif" font-size="14.00" fill='red'>#if 0</text>
+<text text-anchor="start" x="1316.76" y="-9952.3" font-family="Times,serif" font-size="14.00" fill='red'> ps1(pcm, vb1, coef);</text>
+<text text-anchor="start" x="1316.76" y="-9937.3" font-family="Times,serif" font-size="14.00" fill='red'>#else</text>
+<text text-anchor="start" x="1316.76" y="-9922.3" font-family="Times,serif" font-size="14.00" fill='red'> sum1L = sum1R = rndVal;</text>
+<text text-anchor="start" x="1316.76" y="-9907.3" font-family="Times,serif" font-size="14.00" fill='red'> MC1S(0)</text>
 </g>
 <!-- 44676&#45;&gt;43260 -->
 <g id="edge43" class="edge">
@@ -299,7 +299,7 @@
 <g id="node31" class="node">
 <title>1000144</title>
 <polygon fill="none" stroke="black" points="1645.26,-121.5 1645.26,-157.5 1824.26,-157.5 1824.26,-121.5 1645.26,-121.5"/>
-<text text-anchor="start" x="1653.26" y="-135.8" font-family="Times,serif" font-size="14.00">debug x &gt;&gt;= fracBits;</text>
+<text text-anchor="start" x="1653.26" y="-135.8" font-family="Times,serif" font-size="14.00" fill='red'> x &gt;&gt;= fracBits;</text>
 </g>
 <!-- 44676&#45;&gt;1000144 -->
 <g id="edge42" class="edge">
@@ -373,24 +373,24 @@
 <text text-anchor="start" x="1150.76" y="-9052.3" font-family="Times,serif" font-size="14.00">mul s8,a6,s8</text>
 <text text-anchor="start" x="1150.76" y="-9037.3" font-family="Times,serif" font-size="14.00">add a4,t6,s10</text>
 <text text-anchor="start" x="1150.76" y="-9022.3" font-family="Times,serif" font-size="14.00">add s0,a7,t5</text>
-<text text-anchor="start" x="1150.76" y="-9007.3" font-family="Times,serif" font-size="14.00">debug MC1S(4)</text>
-<text text-anchor="start" x="1150.76" y="-8992.3" font-family="Times,serif" font-size="14.00">debug MC1S(5)</text>
-<text text-anchor="start" x="1150.76" y="-8977.3" font-family="Times,serif" font-size="14.00">debug MC1S(6)</text>
-<text text-anchor="start" x="1150.76" y="-8962.3" font-family="Times,serif" font-size="14.00">debug MC1S(7)</text>
-<text text-anchor="start" x="1150.76" y="-8947.3" font-family="Times,serif" font-size="14.00">debug *(pcm + 2 * 16 + 0) = ClipToShort((int)SAR64(sum1L, (32 &#45; CSHIFT)), DEF_NFRACBITS);</text>
+<text text-anchor="start" x="1150.76" y="-9007.3" font-family="Times,serif" font-size="14.00" fill='red'> MC1S(4)</text>
+<text text-anchor="start" x="1150.76" y="-8992.3" font-family="Times,serif" font-size="14.00" fill='red'> MC1S(5)</text>
+<text text-anchor="start" x="1150.76" y="-8977.3" font-family="Times,serif" font-size="14.00" fill='red'> MC1S(6)</text>
+<text text-anchor="start" x="1150.76" y="-8962.3" font-family="Times,serif" font-size="14.00" fill='red'> MC1S(7)</text>
+<text text-anchor="start" x="1150.76" y="-8947.3" font-family="Times,serif" font-size="14.00" fill='red'> *(pcm + 2 * 16 + 0) = ClipToShort((int)SAR64(sum1L, (32 &#45; CSHIFT)), DEF_NFRACBITS);</text>
 <text text-anchor="start" x="1150.76" y="-8932.3" font-family="Times,serif" font-size="14.00">bfos s3,s0,51,20</text>
 <text text-anchor="start" x="1150.76" y="-8917.3" font-family="Times,serif" font-size="14.00">add t4,a4,s5</text>
 <text text-anchor="start" x="1150.76" y="-8902.3" font-family="Times,serif" font-size="14.00">add a5,t4,s2</text>
-<text text-anchor="start" x="1150.76" y="-8887.3" font-family="Times,serif" font-size="14.00">debug return (short)x;</text>
+<text text-anchor="start" x="1150.76" y="-8887.3" font-family="Times,serif" font-size="14.00" fill='red'> return (short)x;</text>
 <text text-anchor="start" x="1150.76" y="-8872.3" font-family="Times,serif" font-size="14.00">sh s9,2(a0)</text>
-<text text-anchor="start" x="1150.76" y="-8857.3" font-family="Times,serif" font-size="14.00">debug sign = x &gt;&gt; 31;</text>
+<text text-anchor="start" x="1150.76" y="-8857.3" font-family="Times,serif" font-size="14.00" fill='red'> sign = x &gt;&gt; 31;</text>
 <text text-anchor="start" x="1150.76" y="-8842.3" font-family="Times,serif" font-size="14.00">sraiw t0,s3,0x1f</text>
-<text text-anchor="start" x="1150.76" y="-8827.3" font-family="Times,serif" font-size="14.00">debug if (sign != (x &gt;&gt; 15))</text>
+<text text-anchor="start" x="1150.76" y="-8827.3" font-family="Times,serif" font-size="14.00" fill='red'> if (sign != (x &gt;&gt; 15))</text>
 <text text-anchor="start" x="1150.76" y="-8812.3" font-family="Times,serif" font-size="14.00">sraiw s1,s3,0x15</text>
 <text text-anchor="start" x="1150.76" y="-8797.3" font-family="Times,serif" font-size="14.00">add s9,a5,s8</text>
-<text text-anchor="start" x="1150.76" y="-8782.3" font-family="Times,serif" font-size="14.00">debug x &gt;&gt;= fracBits;</text>
+<text text-anchor="start" x="1150.76" y="-8782.3" font-family="Times,serif" font-size="14.00" fill='red'> x &gt;&gt;= fracBits;</text>
 <text text-anchor="start" x="1150.76" y="-8767.3" font-family="Times,serif" font-size="14.00">sraiw t2,s3,0x6</text>
-<text text-anchor="start" x="1150.76" y="-8752.3" font-family="Times,serif" font-size="14.00">debug if (sign != (x &gt;&gt; 15))</text>
+<text text-anchor="start" x="1150.76" y="-8752.3" font-family="Times,serif" font-size="14.00" fill='red'> if (sign != (x &gt;&gt; 15))</text>
 <text text-anchor="start" x="1150.76" y="-8737.3" font-family="Times,serif" font-size="14.00">beq s1,t0,aa14 &lt;xmp3_PolyphaseStereo+0x33c&gt;</text>
 <polyline fill="none" stroke="black" points="1142.76,-8729.5 1848.76,-8729.5 "/>
 <text text-anchor="middle" x="1325.26" y="-8714.3" font-family="Times,serif" font-size="14.00">No Jump</text>
@@ -413,11 +413,11 @@
 <g id="node8" class="node">
 <title>1000041</title>
 <polygon fill="green" stroke="black" points="873.26,-8586.5 873.26,-8669.5 1580.26,-8669.5 1580.26,-8586.5 873.26,-8586.5"/>
-<text text-anchor="start" x="881.26" y="-8654.3" font-family="Times,serif" font-size="14.00">debug x = sign ^ ((1 &lt;&lt; 15) &#45; 1);</text>
+<text text-anchor="start" x="881.26" y="-8654.3" font-family="Times,serif" font-size="14.00" fill='red'> x = sign ^ ((1 &lt;&lt; 15) &#45; 1);</text>
 <text text-anchor="start" x="881.26" y="-8639.3" font-family="Times,serif" font-size="14.00">lui t3,0x8</text>
 <text text-anchor="start" x="881.26" y="-8624.3" font-family="Times,serif" font-size="14.00">addi s6,t3,&#45;1 # 7fff &lt;xmp3_UnpackScaleFact$ors+0x673&gt;</text>
 <text text-anchor="start" x="881.26" y="-8609.3" font-family="Times,serif" font-size="14.00">xor t2,t0,s6</text>
-<text text-anchor="start" x="881.26" y="-8594.3" font-family="Times,serif" font-size="14.00">debug *(pcm + 2 * 16 + 1) = ClipToShort((int)SAR64(sum1R, (32 &#45; CSHIFT)), DEF_NFRACBITS);</text>
+<text text-anchor="start" x="881.26" y="-8594.3" font-family="Times,serif" font-size="14.00" fill='red'> *(pcm + 2 * 16 + 1) = ClipToShort((int)SAR64(sum1R, (32 &#45; CSHIFT)), DEF_NFRACBITS);</text>
 </g>
 <!-- 43272&#45;&gt;1000041 -->
 <g id="edge7" class="edge">
@@ -430,13 +430,13 @@
 <title>43540</title>
 <polygon fill="green" stroke="black" points="1042.26,-8383.5 1042.26,-8549.5 1411.26,-8549.5 1411.26,-8383.5 1042.26,-8383.5"/>
 <text text-anchor="start" x="1050.26" y="-8534.3" font-family="Times,serif" font-size="14.00">bfos s10,s9,51,20</text>
-<text text-anchor="start" x="1050.26" y="-8519.3" font-family="Times,serif" font-size="14.00">debug sign = x &gt;&gt; 31;</text>
+<text text-anchor="start" x="1050.26" y="-8519.3" font-family="Times,serif" font-size="14.00" fill='red'> sign = x &gt;&gt; 31;</text>
 <text text-anchor="start" x="1050.26" y="-8504.3" font-family="Times,serif" font-size="14.00">sraiw t5,s10,0x1f</text>
-<text text-anchor="start" x="1050.26" y="-8489.3" font-family="Times,serif" font-size="14.00">debug if (sign != (x &gt;&gt; 15))</text>
+<text text-anchor="start" x="1050.26" y="-8489.3" font-family="Times,serif" font-size="14.00" fill='red'> if (sign != (x &gt;&gt; 15))</text>
 <text text-anchor="start" x="1050.26" y="-8474.3" font-family="Times,serif" font-size="14.00">sraiw s7,s10,0x15</text>
-<text text-anchor="start" x="1050.26" y="-8459.3" font-family="Times,serif" font-size="14.00">debug return (short)x;</text>
+<text text-anchor="start" x="1050.26" y="-8459.3" font-family="Times,serif" font-size="14.00" fill='red'> return (short)x;</text>
 <text text-anchor="start" x="1050.26" y="-8444.3" font-family="Times,serif" font-size="14.00">sh t2,64(a0)</text>
-<text text-anchor="start" x="1050.26" y="-8429.3" font-family="Times,serif" font-size="14.00">debug if (sign != (x &gt;&gt; 15))</text>
+<text text-anchor="start" x="1050.26" y="-8429.3" font-family="Times,serif" font-size="14.00" fill='red'> if (sign != (x &gt;&gt; 15))</text>
 <text text-anchor="start" x="1050.26" y="-8414.3" font-family="Times,serif" font-size="14.00">beq s7,t5,aea4 &lt;xmp3_PolyphaseStereo+0x7cc&gt;</text>
 <polyline fill="none" stroke="black" points="1042.26,-8406.5 1411.26,-8406.5 "/>
 <text text-anchor="middle" x="1140.76" y="-8391.3" font-family="Times,serif" font-size="14.00">No Jump</text>
@@ -459,11 +459,11 @@
 <g id="node10" class="node">
 <title>1000047</title>
 <polygon fill="green" stroke="black" points="708.26,-8263.5 708.26,-8346.5 1147.26,-8346.5 1147.26,-8263.5 708.26,-8263.5"/>
-<text text-anchor="start" x="716.26" y="-8331.3" font-family="Times,serif" font-size="14.00">debug x = sign ^ ((1 &lt;&lt; 15) &#45; 1);</text>
+<text text-anchor="start" x="716.26" y="-8331.3" font-family="Times,serif" font-size="14.00" fill='red'> x = sign ^ ((1 &lt;&lt; 15) &#45; 1);</text>
 <text text-anchor="start" x="716.26" y="-8316.3" font-family="Times,serif" font-size="14.00">lui a3,0x8</text>
 <text text-anchor="start" x="716.26" y="-8301.3" font-family="Times,serif" font-size="14.00">addi s11,a3,&#45;1 # 7fff &lt;xmp3_UnpackScaleFactors+0x673&gt;</text>
 <text text-anchor="start" x="716.26" y="-8286.3" font-family="Times,serif" font-size="14.00">xor s5,t5,s11</text>
-<text text-anchor="start" x="716.26" y="-8271.3" font-family="Times,serif" font-size="14.00">debug return (short)x;</text>
+<text text-anchor="start" x="716.26" y="-8271.3" font-family="Times,serif" font-size="14.00" fill='red'> return (short)x;</text>
 </g>
 <!-- 43540&#45;&gt;1000047 -->
 <g id="edge10" class="edge">
@@ -493,30 +493,30 @@
 <title>43572</title>
 <polygon fill="green" stroke="black" points="597.26,-7805.5 597.26,-8226.5 1308.26,-8226.5 1308.26,-7805.5 597.26,-7805.5"/>
 <text text-anchor="start" x="605.26" y="-8211.3" font-family="Times,serif" font-size="14.00">c.lui s4,0x1</text>
-<text text-anchor="start" x="605.26" y="-8196.3" font-family="Times,serif" font-size="14.00">debug x = sign ^ ((1 &lt;&lt; 15) &#45; 1);</text>
+<text text-anchor="start" x="605.26" y="-8196.3" font-family="Times,serif" font-size="14.00" fill='red'> x = sign ^ ((1 &lt;&lt; 15) &#45; 1);</text>
 <text text-anchor="start" x="605.26" y="-8181.3" font-family="Times,serif" font-size="14.00">c.lui t1,0x8</text>
-<text text-anchor="start" x="605.26" y="-8166.3" font-family="Times,serif" font-size="14.00">debug#endif</text>
-<text text-anchor="start" x="605.26" y="-8151.3" font-family="Times,serif" font-size="14.00">debug /* main convolution loop: sum1L = samples 1, 2, 3, ... 15 sum2L = samples 31, 30, ... 17 */</text>
-<text text-anchor="start" x="605.26" y="-8136.3" font-family="Times,serif" font-size="14.00">debug coef = coefBase + 16;</text>
+<text text-anchor="start" x="605.26" y="-8166.3" font-family="Times,serif" font-size="14.00" fill='red'>#endif</text>
+<text text-anchor="start" x="605.26" y="-8151.3" font-family="Times,serif" font-size="14.00" fill='red'> /* main convolution loop: sum1L = samples 1, 2, 3, ... 15 sum2L = samples 31, 30, ... 17 */</text>
+<text text-anchor="start" x="605.26" y="-8136.3" font-family="Times,serif" font-size="14.00" fill='red'> coef = coefBase + 16;</text>
 <text text-anchor="start" x="605.26" y="-8121.3" font-family="Times,serif" font-size="14.00">addi s7,a2,64</text>
-<text text-anchor="start" x="605.26" y="-8106.3" font-family="Times,serif" font-size="14.00">debug vb1 = vbuf + 64;</text>
+<text text-anchor="start" x="605.26" y="-8106.3" font-family="Times,serif" font-size="14.00" fill='red'> vb1 = vbuf + 64;</text>
 <text text-anchor="start" x="605.26" y="-8091.3" font-family="Times,serif" font-size="14.00">addi s2,a1,256</text>
-<text text-anchor="start" x="605.26" y="-8076.3" font-family="Times,serif" font-size="14.00">debug pcm += 2;</text>
+<text text-anchor="start" x="605.26" y="-8076.3" font-family="Times,serif" font-size="14.00" fill='red'> pcm += 2;</text>
 <text text-anchor="start" x="605.26" y="-8061.3" font-family="Times,serif" font-size="14.00">addi a2,a0,4</text>
 <text text-anchor="start" x="605.26" y="-8046.3" font-family="Times,serif" font-size="14.00">addi a6,a0,124</text>
 <text text-anchor="start" x="605.26" y="-8031.3" font-family="Times,serif" font-size="14.00">c.add a1,s4</text>
-<text text-anchor="start" x="605.26" y="-8016.3" font-family="Times,serif" font-size="14.00">debug x = sign ^ ((1 &lt;&lt; 15) &#45; 1);</text>
+<text text-anchor="start" x="605.26" y="-8016.3" font-family="Times,serif" font-size="14.00" fill='red'> x = sign ^ ((1 &lt;&lt; 15) &#45; 1);</text>
 <text text-anchor="start" x="605.26" y="-8001.3" font-family="Times,serif" font-size="14.00">addi t6,t1,&#45;1 # 7fff &lt;xmp3_UnpackScaleFactors+0x673&gt;</text>
-<text text-anchor="start" x="605.26" y="-7986.3" font-family="Times,serif" font-size="14.00">debug pcm += 2;</text>
+<text text-anchor="start" x="605.26" y="-7986.3" font-family="Times,serif" font-size="14.00" fill='red'> pcm += 2;</text>
 <text text-anchor="start" x="605.26" y="-7971.3" font-family="Times,serif" font-size="14.00">c.sdsp a2,0(sp)</text>
 <text text-anchor="start" x="605.26" y="-7956.3" font-family="Times,serif" font-size="14.00">c.sdsp a6,8(sp)</text>
 <text text-anchor="start" x="605.26" y="-7941.3" font-family="Times,serif" font-size="14.00">c.sdsp a1,152(sp)</text>
-<text text-anchor="start" x="605.26" y="-7926.3" font-family="Times,serif" font-size="14.00">debug x = sign ^ ((1 &lt;&lt; 15) &#45; 1);</text>
+<text text-anchor="start" x="605.26" y="-7926.3" font-family="Times,serif" font-size="14.00" fill='red'> x = sign ^ ((1 &lt;&lt; 15) &#45; 1);</text>
 <text text-anchor="start" x="605.26" y="-7911.3" font-family="Times,serif" font-size="14.00">c.sdsp t6,40(sp)</text>
-<text text-anchor="start" x="605.26" y="-7896.3" font-family="Times,serif" font-size="14.00">debug return (short)x;</text>
+<text text-anchor="start" x="605.26" y="-7896.3" font-family="Times,serif" font-size="14.00" fill='red'> return (short)x;</text>
 <text text-anchor="start" x="605.26" y="-7881.3" font-family="Times,serif" font-size="14.00">sh s5,66(a0)</text>
-<text text-anchor="start" x="605.26" y="-7866.3" font-family="Times,serif" font-size="14.00">debug /* right now, the compiler creates bad asm from this... */</text>
-<text text-anchor="start" x="605.26" y="-7851.3" font-family="Times,serif" font-size="14.00">debug for (i = 15; i &gt; 0; i&#45;&#45;)</text>
+<text text-anchor="start" x="605.26" y="-7866.3" font-family="Times,serif" font-size="14.00" fill='red'> /* right now, the compiler creates bad asm from this... */</text>
+<text text-anchor="start" x="605.26" y="-7851.3" font-family="Times,serif" font-size="14.00" fill='red'> for (i = 15; i &gt; 0; i&#45;&#45;)</text>
 <text text-anchor="start" x="605.26" y="-7836.3" font-family="Times,serif" font-size="14.00">c.j aad0 &lt;xmp3_PolyphaseStereo+0x3f8&gt;</text>
 <polyline fill="none" stroke="black" points="597.26,-7828.5 1308.26,-7828.5 "/>
 <text text-anchor="middle" x="781.26" y="-7813.3" font-family="Times,serif" font-size="14.00">No Jump</text>
@@ -551,7 +551,7 @@
 <g id="node13" class="node">
 <title>1000061</title>
 <polygon fill="green" stroke="black" points="386.76,-7732.5 386.76,-7768.5 640.76,-7768.5 640.76,-7732.5 386.76,-7732.5"/>
-<text text-anchor="start" x="394.76" y="-7746.8" font-family="Times,serif" font-size="14.00">debug x = sign ^ ((1 &lt;&lt; 15) &#45; 1);</text>
+<text text-anchor="start" x="394.76" y="-7746.8" font-family="Times,serif" font-size="14.00" fill='red'> x = sign ^ ((1 &lt;&lt; 15) &#45; 1);</text>
 </g>
 <!-- 43572&#45;&gt;1000061 -->
 <g id="edge13" class="edge">
@@ -565,17 +565,17 @@
 <polygon fill="green" stroke="black" points="824.76,-2073.5 824.76,-6244.5 1466.76,-6244.5 1466.76,-2073.5 824.76,-2073.5"/>
 <text text-anchor="start" x="832.76" y="-6229.3" font-family="Times,serif" font-size="14.00">lw a7,0(s7) # 2000000 &lt;_heap_end+0x1dbf970&gt;</text>
 <text text-anchor="start" x="832.76" y="-6214.3" font-family="Times,serif" font-size="14.00">lw a0,0(s2)</text>
-<text text-anchor="start" x="832.76" y="-6199.3" font-family="Times,serif" font-size="14.00">debug MC2S(0)</text>
+<text text-anchor="start" x="832.76" y="-6199.3" font-family="Times,serif" font-size="14.00" fill='red'> MC2S(0)</text>
 <text text-anchor="start" x="832.76" y="-6184.3" font-family="Times,serif" font-size="14.00">lw s3,4(s7)</text>
 <text text-anchor="start" x="832.76" y="-6169.3" font-family="Times,serif" font-size="14.00">mul t4,a7,a0</text>
 <text text-anchor="start" x="832.76" y="-6154.3" font-family="Times,serif" font-size="14.00">lw s0,8(s7)</text>
-<text text-anchor="start" x="832.76" y="-6139.3" font-family="Times,serif" font-size="14.00">debug MC2S(1)</text>
+<text text-anchor="start" x="832.76" y="-6139.3" font-family="Times,serif" font-size="14.00" fill='red'> MC2S(1)</text>
 <text text-anchor="start" x="832.76" y="-6124.3" font-family="Times,serif" font-size="14.00">lw t1,12(s7)</text>
 <text text-anchor="start" x="832.76" y="-6109.3" font-family="Times,serif" font-size="14.00">lw t2,92(s2)</text>
 <text text-anchor="start" x="832.76" y="-6094.3" font-family="Times,serif" font-size="14.00">lw s1,4(s2)</text>
 <text text-anchor="start" x="832.76" y="-6079.3" font-family="Times,serif" font-size="14.00">negw t0,s3</text>
 <text text-anchor="start" x="832.76" y="-6064.3" font-family="Times,serif" font-size="14.00">lui t5,0x2000</text>
-<text text-anchor="start" x="832.76" y="-6049.3" font-family="Times,serif" font-size="14.00">debug MC2S(2)</text>
+<text text-anchor="start" x="832.76" y="-6049.3" font-family="Times,serif" font-size="14.00" fill='red'> MC2S(2)</text>
 <text text-anchor="start" x="832.76" y="-6034.3" font-family="Times,serif" font-size="14.00">lw s4,20(s7)</text>
 <text text-anchor="start" x="832.76" y="-6019.3" font-family="Times,serif" font-size="14.00">mul a3,t0,t2</text>
 <text text-anchor="start" x="832.76" y="-6004.3" font-family="Times,serif" font-size="14.00">mul s5,s0,s1</text>
@@ -614,14 +614,14 @@
 <text text-anchor="start" x="832.76" y="-5509.3" font-family="Times,serif" font-size="14.00">lw t6,16(s7)</text>
 <text text-anchor="start" x="832.76" y="-5494.3" font-family="Times,serif" font-size="14.00">lw a3,136(s2)</text>
 <text text-anchor="start" x="832.76" y="-5479.3" font-family="Times,serif" font-size="14.00">lw a7,80(s2)</text>
-<text text-anchor="start" x="832.76" y="-5464.3" font-family="Times,serif" font-size="14.00">debug MC2S(4)</text>
+<text text-anchor="start" x="832.76" y="-5464.3" font-family="Times,serif" font-size="14.00" fill='red'> MC2S(4)</text>
 <text text-anchor="start" x="832.76" y="-5449.3" font-family="Times,serif" font-size="14.00">lw s1,36(s7)</text>
 <text text-anchor="start" x="832.76" y="-5434.3" font-family="Times,serif" font-size="14.00">lw t3,212(s2)</text>
 <text text-anchor="start" x="832.76" y="-5419.3" font-family="Times,serif" font-size="14.00">lw s6,8(s2)</text>
 <text text-anchor="start" x="832.76" y="-5404.3" font-family="Times,serif" font-size="14.00">mul s8,a5,s8</text>
 <text text-anchor="start" x="832.76" y="-5389.3" font-family="Times,serif" font-size="14.00">mul s0,a5,s0</text>
 <text text-anchor="start" x="832.76" y="-5374.3" font-family="Times,serif" font-size="14.00">mul a0,s3,a0</text>
-<text text-anchor="start" x="832.76" y="-5359.3" font-family="Times,serif" font-size="14.00">debug MC2S(3)</text>
+<text text-anchor="start" x="832.76" y="-5359.3" font-family="Times,serif" font-size="14.00" fill='red'> MC2S(3)</text>
 <text text-anchor="start" x="832.76" y="-5344.3" font-family="Times,serif" font-size="14.00">lw s3,28(s7)</text>
 <text text-anchor="start" x="832.76" y="-5329.3" font-family="Times,serif" font-size="14.00">c.sdsp s9,64(sp)</text>
 <text text-anchor="start" x="832.76" y="-5314.3" font-family="Times,serif" font-size="14.00">c.ldsp a5,16(sp)</text>
@@ -670,7 +670,7 @@
 <text text-anchor="start" x="832.76" y="-4669.3" font-family="Times,serif" font-size="14.00">mul a4,s6,a5</text>
 <text text-anchor="start" x="832.76" y="-4654.3" font-family="Times,serif" font-size="14.00">c.sdsp s3,88(sp)</text>
 <text text-anchor="start" x="832.76" y="-4639.3" font-family="Times,serif" font-size="14.00">c.ldsp s3,96(sp)</text>
-<text text-anchor="start" x="832.76" y="-4624.3" font-family="Times,serif" font-size="14.00">debug MC2S(5)</text>
+<text text-anchor="start" x="832.76" y="-4624.3" font-family="Times,serif" font-size="14.00" fill='red'> MC2S(5)</text>
 <text text-anchor="start" x="832.76" y="-4609.3" font-family="Times,serif" font-size="14.00">lw t2,44(s7)</text>
 <text text-anchor="start" x="832.76" y="-4594.3" font-family="Times,serif" font-size="14.00">lw s8,144(s2)</text>
 <text text-anchor="start" x="832.76" y="-4579.3" font-family="Times,serif" font-size="14.00">lw s11,208(s2)</text>
@@ -729,7 +729,7 @@
 <text text-anchor="start" x="832.76" y="-3784.3" font-family="Times,serif" font-size="14.00">mul s10,t2,s10</text>
 <text text-anchor="start" x="832.76" y="-3769.3" font-family="Times,serif" font-size="14.00">c.add a4,t5</text>
 <text text-anchor="start" x="832.76" y="-3754.3" font-family="Times,serif" font-size="14.00">lw a0,148(s2)</text>
-<text text-anchor="start" x="832.76" y="-3739.3" font-family="Times,serif" font-size="14.00">debug MC2S(7)</text>
+<text text-anchor="start" x="832.76" y="-3739.3" font-family="Times,serif" font-size="14.00" fill='red'> MC2S(7)</text>
 <text text-anchor="start" x="832.76" y="-3724.3" font-family="Times,serif" font-size="14.00">lw t5,56(s7)</text>
 <text text-anchor="start" x="832.76" y="-3709.3" font-family="Times,serif" font-size="14.00">c.add a2,s3</text>
 <text text-anchor="start" x="832.76" y="-3694.3" font-family="Times,serif" font-size="14.00">c.add a5,t6</text>
@@ -741,7 +741,7 @@
 <text text-anchor="start" x="832.76" y="-3604.3" font-family="Times,serif" font-size="14.00">lw s8,28(s2)</text>
 <text text-anchor="start" x="832.76" y="-3589.3" font-family="Times,serif" font-size="14.00">c.ldsp t4,112(sp)</text>
 <text text-anchor="start" x="832.76" y="-3574.3" font-family="Times,serif" font-size="14.00">c.add a2,t3</text>
-<text text-anchor="start" x="832.76" y="-3559.3" font-family="Times,serif" font-size="14.00">debug MC2S(6)</text>
+<text text-anchor="start" x="832.76" y="-3559.3" font-family="Times,serif" font-size="14.00" fill='red'> MC2S(6)</text>
 <text text-anchor="start" x="832.76" y="-3544.3" font-family="Times,serif" font-size="14.00">lw a1,52(s7)</text>
 <text text-anchor="start" x="832.76" y="-3529.3" font-family="Times,serif" font-size="14.00">lw s3,68(s2)</text>
 <text text-anchor="start" x="832.76" y="-3514.3" font-family="Times,serif" font-size="14.00">c.ldsp t1,88(sp)</text>
@@ -752,7 +752,7 @@
 <text text-anchor="start" x="832.76" y="-3439.3" font-family="Times,serif" font-size="14.00">c.add a2,t4</text>
 <text text-anchor="start" x="832.76" y="-3424.3" font-family="Times,serif" font-size="14.00">c.sdsp s1,72(sp)</text>
 <text text-anchor="start" x="832.76" y="-3409.3" font-family="Times,serif" font-size="14.00">lw t4,152(s2)</text>
-<text text-anchor="start" x="832.76" y="-3394.3" font-family="Times,serif" font-size="14.00">debug MC2S(7)</text>
+<text text-anchor="start" x="832.76" y="-3394.3" font-family="Times,serif" font-size="14.00" fill='red'> MC2S(7)</text>
 <text text-anchor="start" x="832.76" y="-3379.3" font-family="Times,serif" font-size="14.00">lw s1,60(s7)</text>
 <text text-anchor="start" x="832.76" y="-3364.3" font-family="Times,serif" font-size="14.00">lw a6,64(s2)</text>
 <text text-anchor="start" x="832.76" y="-3349.3" font-family="Times,serif" font-size="14.00">c.sdsp s10,56(sp)</text>
@@ -819,7 +819,7 @@
 <text text-anchor="start" x="832.76" y="-2434.3" font-family="Times,serif" font-size="14.00">add a1,s9,a3</text>
 <text text-anchor="start" x="832.76" y="-2419.3" font-family="Times,serif" font-size="14.00">c.add t4,t6</text>
 <text text-anchor="start" x="832.76" y="-2404.3" font-family="Times,serif" font-size="14.00">c.add s11,a2</text>
-<text text-anchor="start" x="832.76" y="-2389.3" font-family="Times,serif" font-size="14.00">debug *(pcm + 0) = ClipToShort((int)SAR64(sum1L, (32 &#45; CSHIFT)), DEF_NFRACBITS);</text>
+<text text-anchor="start" x="832.76" y="-2389.3" font-family="Times,serif" font-size="14.00" fill='red'> *(pcm + 0) = ClipToShort((int)SAR64(sum1L, (32 &#45; CSHIFT)), DEF_NFRACBITS);</text>
 <text text-anchor="start" x="832.76" y="-2374.3" font-family="Times,serif" font-size="14.00">bfos a4,s11,51,20</text>
 <text text-anchor="start" x="832.76" y="-2359.3" font-family="Times,serif" font-size="14.00">c.add s3,a1</text>
 <text text-anchor="start" x="832.76" y="-2344.3" font-family="Times,serif" font-size="14.00">c.add t3,s5</text>
@@ -827,17 +827,17 @@
 <text text-anchor="start" x="832.76" y="-2314.3" font-family="Times,serif" font-size="14.00">add t2,t1,a7</text>
 <text text-anchor="start" x="832.76" y="-2299.3" font-family="Times,serif" font-size="14.00">add s0,s3,s8</text>
 <text text-anchor="start" x="832.76" y="-2284.3" font-family="Times,serif" font-size="14.00">add s10,t3,s4</text>
-<text text-anchor="start" x="832.76" y="-2269.3" font-family="Times,serif" font-size="14.00">debug sign = x &gt;&gt; 31;</text>
+<text text-anchor="start" x="832.76" y="-2269.3" font-family="Times,serif" font-size="14.00" fill='red'> sign = x &gt;&gt; 31;</text>
 <text text-anchor="start" x="832.76" y="-2254.3" font-family="Times,serif" font-size="14.00">sraiw s6,a4,0x1f</text>
-<text text-anchor="start" x="832.76" y="-2239.3" font-family="Times,serif" font-size="14.00">debug if (sign != (x &gt;&gt; 15))</text>
+<text text-anchor="start" x="832.76" y="-2239.3" font-family="Times,serif" font-size="14.00" fill='red'> if (sign != (x &gt;&gt; 15))</text>
 <text text-anchor="start" x="832.76" y="-2224.3" font-family="Times,serif" font-size="14.00">sraiw a5,a4,0x15</text>
 <text text-anchor="start" x="832.76" y="-2209.3" font-family="Times,serif" font-size="14.00">addi s7,s7,64</text>
 <text text-anchor="start" x="832.76" y="-2194.3" font-family="Times,serif" font-size="14.00">add s8,s0,a6</text>
 <text text-anchor="start" x="832.76" y="-2179.3" font-family="Times,serif" font-size="14.00">add a7,s10,a0</text>
 <text text-anchor="start" x="832.76" y="-2164.3" font-family="Times,serif" font-size="14.00">add s9,t2,t5</text>
-<text text-anchor="start" x="832.76" y="-2149.3" font-family="Times,serif" font-size="14.00">debug vb1 += 64;</text>
+<text text-anchor="start" x="832.76" y="-2149.3" font-family="Times,serif" font-size="14.00" fill='red'> vb1 += 64;</text>
 <text text-anchor="start" x="832.76" y="-2134.3" font-family="Times,serif" font-size="14.00">addi s2,s2,256</text>
-<text text-anchor="start" x="832.76" y="-2119.3" font-family="Times,serif" font-size="14.00">debug if (sign != (x &gt;&gt; 15))</text>
+<text text-anchor="start" x="832.76" y="-2119.3" font-family="Times,serif" font-size="14.00" fill='red'> if (sign != (x &gt;&gt; 15))</text>
 <text text-anchor="start" x="832.76" y="-2104.3" font-family="Times,serif" font-size="14.00">bne a5,s6,aa5c &lt;xmp3_PolyphaseStereo+0x384&gt;</text>
 <polyline fill="none" stroke="black" points="824.76,-2096.5 1466.76,-2096.5 "/>
 <text text-anchor="middle" x="991.26" y="-2081.3" font-family="Times,serif" font-size="14.00">No Jump</text>
@@ -855,23 +855,23 @@
 <title>43612</title>
 <polygon fill="green" stroke="black" points="57.76,-7379.5 57.76,-7695.5 701.76,-7695.5 701.76,-7379.5 57.76,-7379.5"/>
 <text text-anchor="start" x="65.76" y="-7680.3" font-family="Times,serif" font-size="14.00">c.ldsp t0,40(sp)</text>
-<text text-anchor="start" x="65.76" y="-7665.3" font-family="Times,serif" font-size="14.00">debug return (short)x;</text>
+<text text-anchor="start" x="65.76" y="-7665.3" font-family="Times,serif" font-size="14.00" fill='red'> return (short)x;</text>
 <text text-anchor="start" x="65.76" y="-7650.3" font-family="Times,serif" font-size="14.00">c.ldsp t5,0(sp)</text>
-<text text-anchor="start" x="65.76" y="-7635.3" font-family="Times,serif" font-size="14.00">debug MC2S(6)</text>
-<text text-anchor="start" x="65.76" y="-7620.3" font-family="Times,serif" font-size="14.00">debug MC2S(7)</text>
-<text text-anchor="start" x="65.76" y="-7605.3" font-family="Times,serif" font-size="14.00">debug vb1 += 64;</text>
-<text text-anchor="start" x="65.76" y="-7590.3" font-family="Times,serif" font-size="14.00">debug *(pcm + 0) = ClipToShort((int)SAR64(sum1L, (32 &#45; CSHIFT)), DEF_NFRACBITS);</text>
-<text text-anchor="start" x="65.76" y="-7575.3" font-family="Times,serif" font-size="14.00">debug *(pcm + 1) = ClipToShort((int)SAR64(sum1R, (32 &#45; CSHIFT)), DEF_NFRACBITS);</text>
+<text text-anchor="start" x="65.76" y="-7635.3" font-family="Times,serif" font-size="14.00" fill='red'> MC2S(6)</text>
+<text text-anchor="start" x="65.76" y="-7620.3" font-family="Times,serif" font-size="14.00" fill='red'> MC2S(7)</text>
+<text text-anchor="start" x="65.76" y="-7605.3" font-family="Times,serif" font-size="14.00" fill='red'> vb1 += 64;</text>
+<text text-anchor="start" x="65.76" y="-7590.3" font-family="Times,serif" font-size="14.00" fill='red'> *(pcm + 0) = ClipToShort((int)SAR64(sum1L, (32 &#45; CSHIFT)), DEF_NFRACBITS);</text>
+<text text-anchor="start" x="65.76" y="-7575.3" font-family="Times,serif" font-size="14.00" fill='red'> *(pcm + 1) = ClipToShort((int)SAR64(sum1R, (32 &#45; CSHIFT)), DEF_NFRACBITS);</text>
 <text text-anchor="start" x="65.76" y="-7560.3" font-family="Times,serif" font-size="14.00">bfos t6,a7,51,20</text>
-<text text-anchor="start" x="65.76" y="-7545.3" font-family="Times,serif" font-size="14.00">debug x = sign ^ ((1 &lt;&lt; 15) &#45; 1);</text>
+<text text-anchor="start" x="65.76" y="-7545.3" font-family="Times,serif" font-size="14.00" fill='red'> x = sign ^ ((1 &lt;&lt; 15) &#45; 1);</text>
 <text text-anchor="start" x="65.76" y="-7530.3" font-family="Times,serif" font-size="14.00">xor s4,s6,t0</text>
-<text text-anchor="start" x="65.76" y="-7515.3" font-family="Times,serif" font-size="14.00">debug sign = x &gt;&gt; 31;</text>
+<text text-anchor="start" x="65.76" y="-7515.3" font-family="Times,serif" font-size="14.00" fill='red'> sign = x &gt;&gt; 31;</text>
 <text text-anchor="start" x="65.76" y="-7500.3" font-family="Times,serif" font-size="14.00">sraiw s1,t6,0x1f</text>
-<text text-anchor="start" x="65.76" y="-7485.3" font-family="Times,serif" font-size="14.00">debug if (sign != (x &gt;&gt; 15))</text>
+<text text-anchor="start" x="65.76" y="-7485.3" font-family="Times,serif" font-size="14.00" fill='red'> if (sign != (x &gt;&gt; 15))</text>
 <text text-anchor="start" x="65.76" y="-7470.3" font-family="Times,serif" font-size="14.00">sraiw a2,t6,0x15</text>
-<text text-anchor="start" x="65.76" y="-7455.3" font-family="Times,serif" font-size="14.00">debug return (short)x;</text>
+<text text-anchor="start" x="65.76" y="-7455.3" font-family="Times,serif" font-size="14.00" fill='red'> return (short)x;</text>
 <text text-anchor="start" x="65.76" y="-7440.3" font-family="Times,serif" font-size="14.00">sh s4,0(t5) # 1000 &lt;xmp3_DequantChannel+0x3b4&gt;</text>
-<text text-anchor="start" x="65.76" y="-7425.3" font-family="Times,serif" font-size="14.00">debug if (sign != (x &gt;&gt; 15))</text>
+<text text-anchor="start" x="65.76" y="-7425.3" font-family="Times,serif" font-size="14.00" fill='red'> if (sign != (x &gt;&gt; 15))</text>
 <text text-anchor="start" x="65.76" y="-7410.3" font-family="Times,serif" font-size="14.00">beq a2,s1,ae14 &lt;xmp3_PolyphaseStereo+0x73c&gt;</text>
 <polyline fill="none" stroke="black" points="57.76,-7402.5 701.76,-7402.5 "/>
 <text text-anchor="middle" x="224.76" y="-7387.3" font-family="Times,serif" font-size="14.00">No Jump</text>
@@ -894,19 +894,19 @@
 <g id="node26" class="node">
 <title>1000109</title>
 <polygon fill="none" stroke="black" points="86.76,-1795.5 86.76,-2036.5 730.76,-2036.5 730.76,-1795.5 86.76,-1795.5"/>
-<text text-anchor="start" x="94.76" y="-2021.3" font-family="Times,serif" font-size="14.00">debug return (short)x;</text>
+<text text-anchor="start" x="94.76" y="-2021.3" font-family="Times,serif" font-size="14.00" fill='red'> return (short)x;</text>
 <text text-anchor="start" x="94.76" y="-2006.3" font-family="Times,serif" font-size="14.00">c.ldsp t5,0(sp)</text>
-<text text-anchor="start" x="94.76" y="-1991.3" font-family="Times,serif" font-size="14.00">debug *(pcm + 1) = ClipToShort((int)SAR64(sum1R, (32 &#45; CSHIFT)), DEF_NFRACBITS);</text>
+<text text-anchor="start" x="94.76" y="-1991.3" font-family="Times,serif" font-size="14.00" fill='red'> *(pcm + 1) = ClipToShort((int)SAR64(sum1R, (32 &#45; CSHIFT)), DEF_NFRACBITS);</text>
 <text text-anchor="start" x="94.76" y="-1976.3" font-family="Times,serif" font-size="14.00">bfos t6,a7,51,20</text>
-<text text-anchor="start" x="94.76" y="-1961.3" font-family="Times,serif" font-size="14.00">debug x &gt;&gt;= fracBits;</text>
+<text text-anchor="start" x="94.76" y="-1961.3" font-family="Times,serif" font-size="14.00" fill='red'> x &gt;&gt;= fracBits;</text>
 <text text-anchor="start" x="94.76" y="-1946.3" font-family="Times,serif" font-size="14.00">sraiw s4,a4,0x6</text>
-<text text-anchor="start" x="94.76" y="-1931.3" font-family="Times,serif" font-size="14.00">debug sign = x &gt;&gt; 31;</text>
+<text text-anchor="start" x="94.76" y="-1931.3" font-family="Times,serif" font-size="14.00" fill='red'> sign = x &gt;&gt; 31;</text>
 <text text-anchor="start" x="94.76" y="-1916.3" font-family="Times,serif" font-size="14.00">sraiw s1,t6,0x1f</text>
-<text text-anchor="start" x="94.76" y="-1901.3" font-family="Times,serif" font-size="14.00">debug if (sign != (x &gt;&gt; 15))</text>
+<text text-anchor="start" x="94.76" y="-1901.3" font-family="Times,serif" font-size="14.00" fill='red'> if (sign != (x &gt;&gt; 15))</text>
 <text text-anchor="start" x="94.76" y="-1886.3" font-family="Times,serif" font-size="14.00">sraiw a2,t6,0x15</text>
-<text text-anchor="start" x="94.76" y="-1871.3" font-family="Times,serif" font-size="14.00">debug return (short)x;</text>
+<text text-anchor="start" x="94.76" y="-1871.3" font-family="Times,serif" font-size="14.00" fill='red'> return (short)x;</text>
 <text text-anchor="start" x="94.76" y="-1856.3" font-family="Times,serif" font-size="14.00">sh s4,0(t5) # 2000000 &lt;_heap_end+0x1dbf970&gt;</text>
-<text text-anchor="start" x="94.76" y="-1841.3" font-family="Times,serif" font-size="14.00">debug if (sign != (x &gt;&gt; 15))</text>
+<text text-anchor="start" x="94.76" y="-1841.3" font-family="Times,serif" font-size="14.00" fill='red'> if (sign != (x &gt;&gt; 15))</text>
 <text text-anchor="start" x="94.76" y="-1826.3" font-family="Times,serif" font-size="14.00">bne a2,s1,aa78 &lt;xmp3_PolyphaseStereo+0x3a0&gt;</text>
 <polyline fill="none" stroke="black" points="86.76,-1818.5 730.76,-1818.5 "/>
 <text text-anchor="middle" x="253.76" y="-1803.3" font-family="Times,serif" font-size="14.00">No Jump</text>
@@ -923,7 +923,7 @@
 <g id="node16" class="node">
 <title>1000073</title>
 <polygon fill="green" stroke="black" points="448.76,-7306.5 448.76,-7342.5 702.76,-7342.5 702.76,-7306.5 448.76,-7306.5"/>
-<text text-anchor="start" x="456.76" y="-7320.8" font-family="Times,serif" font-size="14.00">debug x = sign ^ ((1 &lt;&lt; 15) &#45; 1);</text>
+<text text-anchor="start" x="456.76" y="-7320.8" font-family="Times,serif" font-size="14.00" fill='red'> x = sign ^ ((1 &lt;&lt; 15) &#45; 1);</text>
 </g>
 <!-- 43612&#45;&gt;1000073 -->
 <g id="edge16" class="edge">
@@ -936,15 +936,15 @@
 <title>44564</title>
 <polygon fill="green" stroke="black" points="290.76,-1489.5 290.76,-1685.5 664.76,-1685.5 664.76,-1489.5 290.76,-1489.5"/>
 <text text-anchor="start" x="298.76" y="-1670.3" font-family="Times,serif" font-size="14.00">bfos a3,s8,51,20</text>
-<text text-anchor="start" x="298.76" y="-1655.3" font-family="Times,serif" font-size="14.00">debug x &gt;&gt;= fracBits;</text>
+<text text-anchor="start" x="298.76" y="-1655.3" font-family="Times,serif" font-size="14.00" fill='red'> x &gt;&gt;= fracBits;</text>
 <text text-anchor="start" x="298.76" y="-1640.3" font-family="Times,serif" font-size="14.00">sraiw a0,t6,0x6</text>
-<text text-anchor="start" x="298.76" y="-1625.3" font-family="Times,serif" font-size="14.00">debug sign = x &gt;&gt; 31;</text>
+<text text-anchor="start" x="298.76" y="-1625.3" font-family="Times,serif" font-size="14.00" fill='red'> sign = x &gt;&gt; 31;</text>
 <text text-anchor="start" x="298.76" y="-1610.3" font-family="Times,serif" font-size="14.00">sraiw a1,a3,0x1f</text>
-<text text-anchor="start" x="298.76" y="-1595.3" font-family="Times,serif" font-size="14.00">debug if (sign != (x &gt;&gt; 15))</text>
+<text text-anchor="start" x="298.76" y="-1595.3" font-family="Times,serif" font-size="14.00" fill='red'> if (sign != (x &gt;&gt; 15))</text>
 <text text-anchor="start" x="298.76" y="-1580.3" font-family="Times,serif" font-size="14.00">sraiw s5,a3,0x15</text>
-<text text-anchor="start" x="298.76" y="-1565.3" font-family="Times,serif" font-size="14.00">debug return (short)x;</text>
+<text text-anchor="start" x="298.76" y="-1565.3" font-family="Times,serif" font-size="14.00" fill='red'> return (short)x;</text>
 <text text-anchor="start" x="298.76" y="-1550.3" font-family="Times,serif" font-size="14.00">sh a0,2(t5)</text>
-<text text-anchor="start" x="298.76" y="-1535.3" font-family="Times,serif" font-size="14.00">debug if (sign != (x &gt;&gt; 15))</text>
+<text text-anchor="start" x="298.76" y="-1535.3" font-family="Times,serif" font-size="14.00" fill='red'> if (sign != (x &gt;&gt; 15))</text>
 <text text-anchor="start" x="298.76" y="-1520.3" font-family="Times,serif" font-size="14.00">bne s5,a1,aa94 &lt;xmp3_PolyphaseStereo+0x3bc&gt;</text>
 <polyline fill="none" stroke="black" points="290.76,-1512.5 664.76,-1512.5 "/>
 <text text-anchor="middle" x="390.26" y="-1497.3" font-family="Times,serif" font-size="14.00">No Jump</text>
@@ -962,17 +962,17 @@
 <title>43640</title>
 <polygon fill="none" stroke="black" points="352.26,-7043.5 352.26,-7269.5 1069.26,-7269.5 1069.26,-7043.5 352.26,-7043.5"/>
 <text text-anchor="start" x="360.26" y="-7254.3" font-family="Times,serif" font-size="14.00">ld a6,40(sp)</text>
-<text text-anchor="start" x="360.26" y="-7239.3" font-family="Times,serif" font-size="14.00">debug *(pcm + 2 * 2 * i + 0) = ClipToShort((int)SAR64(sum2L, (32 &#45; CSHIFT)), DEF_NFRACBITS);</text>
+<text text-anchor="start" x="360.26" y="-7239.3" font-family="Times,serif" font-size="14.00" fill='red'> *(pcm + 2 * 2 * i + 0) = ClipToShort((int)SAR64(sum2L, (32 &#45; CSHIFT)), DEF_NFRACBITS);</text>
 <text text-anchor="start" x="360.26" y="-7224.3" font-family="Times,serif" font-size="14.00">bfos a3,s8,51,20</text>
-<text text-anchor="start" x="360.26" y="-7209.3" font-family="Times,serif" font-size="14.00">debug x = sign ^ ((1 &lt;&lt; 15) &#45; 1);</text>
+<text text-anchor="start" x="360.26" y="-7209.3" font-family="Times,serif" font-size="14.00" fill='red'> x = sign ^ ((1 &lt;&lt; 15) &#45; 1);</text>
 <text text-anchor="start" x="360.26" y="-7194.3" font-family="Times,serif" font-size="14.00">xor a0,s1,a6</text>
-<text text-anchor="start" x="360.26" y="-7179.3" font-family="Times,serif" font-size="14.00">debug sign = x &gt;&gt; 31;</text>
+<text text-anchor="start" x="360.26" y="-7179.3" font-family="Times,serif" font-size="14.00" fill='red'> sign = x &gt;&gt; 31;</text>
 <text text-anchor="start" x="360.26" y="-7164.3" font-family="Times,serif" font-size="14.00">sraiw a1,a3,0x1f</text>
-<text text-anchor="start" x="360.26" y="-7149.3" font-family="Times,serif" font-size="14.00">debug if (sign != (x &gt;&gt; 15))</text>
+<text text-anchor="start" x="360.26" y="-7149.3" font-family="Times,serif" font-size="14.00" fill='red'> if (sign != (x &gt;&gt; 15))</text>
 <text text-anchor="start" x="360.26" y="-7134.3" font-family="Times,serif" font-size="14.00">sraiw s5,a3,0x15</text>
-<text text-anchor="start" x="360.26" y="-7119.3" font-family="Times,serif" font-size="14.00">debug return (short)x;</text>
+<text text-anchor="start" x="360.26" y="-7119.3" font-family="Times,serif" font-size="14.00" fill='red'> return (short)x;</text>
 <text text-anchor="start" x="360.26" y="-7104.3" font-family="Times,serif" font-size="14.00">sh a0,2(t5)</text>
-<text text-anchor="start" x="360.26" y="-7089.3" font-family="Times,serif" font-size="14.00">debug if (sign != (x &gt;&gt; 15))</text>
+<text text-anchor="start" x="360.26" y="-7089.3" font-family="Times,serif" font-size="14.00" fill='red'> if (sign != (x &gt;&gt; 15))</text>
 <text text-anchor="start" x="360.26" y="-7074.3" font-family="Times,serif" font-size="14.00">beq s5,a1,ae2c &lt;xmp3_PolyphaseStereo+0x754&gt;</text>
 <polyline fill="none" stroke="black" points="352.26,-7066.5 1069.26,-7066.5 "/>
 <text text-anchor="middle" x="537.76" y="-7051.3" font-family="Times,serif" font-size="14.00">No Jump</text>
@@ -990,19 +990,19 @@
 <title>43668</title>
 <polygon fill="none" stroke="black" points="351.26,-6677.5 351.26,-6933.5 1070.26,-6933.5 1070.26,-6677.5 351.26,-6677.5"/>
 <text text-anchor="start" x="359.26" y="-6918.3" font-family="Times,serif" font-size="14.00">c.ldsp s11,40(sp)</text>
-<text text-anchor="start" x="359.26" y="-6903.3" font-family="Times,serif" font-size="14.00">debug return (short)x;</text>
+<text text-anchor="start" x="359.26" y="-6903.3" font-family="Times,serif" font-size="14.00" fill='red'> return (short)x;</text>
 <text text-anchor="start" x="359.26" y="-6888.3" font-family="Times,serif" font-size="14.00">c.ldsp t1,8(sp)</text>
-<text text-anchor="start" x="359.26" y="-6873.3" font-family="Times,serif" font-size="14.00">debug *(pcm + 2 * 2 * i + 1) = ClipToShort((int)SAR64(sum2R, (32 &#45; CSHIFT)), DEF_NFRACBITS);</text>
+<text text-anchor="start" x="359.26" y="-6873.3" font-family="Times,serif" font-size="14.00" fill='red'> *(pcm + 2 * 2 * i + 1) = ClipToShort((int)SAR64(sum2R, (32 &#45; CSHIFT)), DEF_NFRACBITS);</text>
 <text text-anchor="start" x="359.26" y="-6858.3" font-family="Times,serif" font-size="14.00">bfos s3,s9,51,20</text>
-<text text-anchor="start" x="359.26" y="-6843.3" font-family="Times,serif" font-size="14.00">debug x = sign ^ ((1 &lt;&lt; 15) &#45; 1);</text>
+<text text-anchor="start" x="359.26" y="-6843.3" font-family="Times,serif" font-size="14.00" fill='red'> x = sign ^ ((1 &lt;&lt; 15) &#45; 1);</text>
 <text text-anchor="start" x="359.26" y="-6828.3" font-family="Times,serif" font-size="14.00">xor t4,a1,s11</text>
-<text text-anchor="start" x="359.26" y="-6813.3" font-family="Times,serif" font-size="14.00">debug sign = x &gt;&gt; 31;</text>
+<text text-anchor="start" x="359.26" y="-6813.3" font-family="Times,serif" font-size="14.00" fill='red'> sign = x &gt;&gt; 31;</text>
 <text text-anchor="start" x="359.26" y="-6798.3" font-family="Times,serif" font-size="14.00">sraiw t3,s3,0x1f</text>
-<text text-anchor="start" x="359.26" y="-6783.3" font-family="Times,serif" font-size="14.00">debug if (sign != (x &gt;&gt; 15))</text>
+<text text-anchor="start" x="359.26" y="-6783.3" font-family="Times,serif" font-size="14.00" fill='red'> if (sign != (x &gt;&gt; 15))</text>
 <text text-anchor="start" x="359.26" y="-6768.3" font-family="Times,serif" font-size="14.00">sraiw a4,s3,0x15</text>
-<text text-anchor="start" x="359.26" y="-6753.3" font-family="Times,serif" font-size="14.00">debug return (short)x;</text>
+<text text-anchor="start" x="359.26" y="-6753.3" font-family="Times,serif" font-size="14.00" fill='red'> return (short)x;</text>
 <text text-anchor="start" x="359.26" y="-6738.3" font-family="Times,serif" font-size="14.00">sh t4,0(t1)</text>
-<text text-anchor="start" x="359.26" y="-6723.3" font-family="Times,serif" font-size="14.00">debug if (sign != (x &gt;&gt; 15))</text>
+<text text-anchor="start" x="359.26" y="-6723.3" font-family="Times,serif" font-size="14.00" fill='red'> if (sign != (x &gt;&gt; 15))</text>
 <text text-anchor="start" x="359.26" y="-6708.3" font-family="Times,serif" font-size="14.00">beq a4,t3,ae48 &lt;xmp3_PolyphaseStereo+0x770&gt;</text>
 <polyline fill="none" stroke="black" points="351.26,-6700.5 1070.26,-6700.5 "/>
 <text text-anchor="middle" x="537.26" y="-6685.3" font-family="Times,serif" font-size="14.00">No Jump</text>
@@ -1019,7 +1019,7 @@
 <g id="node28" class="node">
 <title>1000122</title>
 <polygon fill="none" stroke="black" points="499.76,-1416.5 499.76,-1452.5 675.76,-1452.5 675.76,-1416.5 499.76,-1416.5"/>
-<text text-anchor="start" x="507.76" y="-1430.8" font-family="Times,serif" font-size="14.00">debug return (short)x;</text>
+<text text-anchor="start" x="507.76" y="-1430.8" font-family="Times,serif" font-size="14.00" fill='red'> return (short)x;</text>
 </g>
 <!-- 44564&#45;&gt;1000122 -->
 <g id="edge32" class="edge">
@@ -1031,7 +1031,7 @@
 <g id="node19" class="node">
 <title>1000080</title>
 <polygon fill="none" stroke="black" points="497.76,-6970.5 497.76,-7006.5 751.76,-7006.5 751.76,-6970.5 497.76,-6970.5"/>
-<text text-anchor="start" x="505.76" y="-6984.8" font-family="Times,serif" font-size="14.00">debug x = sign ^ ((1 &lt;&lt; 15) &#45; 1);</text>
+<text text-anchor="start" x="505.76" y="-6984.8" font-family="Times,serif" font-size="14.00" fill='red'> x = sign ^ ((1 &lt;&lt; 15) &#45; 1);</text>
 </g>
 <!-- 43640&#45;&gt;1000080 -->
 <g id="edge19" class="edge">
@@ -1044,17 +1044,17 @@
 <title>44588</title>
 <polygon fill="none" stroke="black" points="554.26,-1153.5 554.26,-1379.5 1273.26,-1379.5 1273.26,-1153.5 554.26,-1153.5"/>
 <text text-anchor="start" x="562.26" y="-1364.3" font-family="Times,serif" font-size="14.00">ld t1,8(sp)</text>
-<text text-anchor="start" x="562.26" y="-1349.3" font-family="Times,serif" font-size="14.00">debug *(pcm + 2 * 2 * i + 1) = ClipToShort((int)SAR64(sum2R, (32 &#45; CSHIFT)), DEF_NFRACBITS);</text>
+<text text-anchor="start" x="562.26" y="-1349.3" font-family="Times,serif" font-size="14.00" fill='red'> *(pcm + 2 * 2 * i + 1) = ClipToShort((int)SAR64(sum2R, (32 &#45; CSHIFT)), DEF_NFRACBITS);</text>
 <text text-anchor="start" x="562.26" y="-1334.3" font-family="Times,serif" font-size="14.00">bfos s3,s9,51,20</text>
-<text text-anchor="start" x="562.26" y="-1319.3" font-family="Times,serif" font-size="14.00">debug x &gt;&gt;= fracBits;</text>
+<text text-anchor="start" x="562.26" y="-1319.3" font-family="Times,serif" font-size="14.00" fill='red'> x &gt;&gt;= fracBits;</text>
 <text text-anchor="start" x="562.26" y="-1304.3" font-family="Times,serif" font-size="14.00">sraiw t4,a3,0x6</text>
-<text text-anchor="start" x="562.26" y="-1289.3" font-family="Times,serif" font-size="14.00">debug sign = x &gt;&gt; 31;</text>
+<text text-anchor="start" x="562.26" y="-1289.3" font-family="Times,serif" font-size="14.00" fill='red'> sign = x &gt;&gt; 31;</text>
 <text text-anchor="start" x="562.26" y="-1274.3" font-family="Times,serif" font-size="14.00">sraiw t3,s3,0x1f</text>
-<text text-anchor="start" x="562.26" y="-1259.3" font-family="Times,serif" font-size="14.00">debug if (sign != (x &gt;&gt; 15))</text>
+<text text-anchor="start" x="562.26" y="-1259.3" font-family="Times,serif" font-size="14.00" fill='red'> if (sign != (x &gt;&gt; 15))</text>
 <text text-anchor="start" x="562.26" y="-1244.3" font-family="Times,serif" font-size="14.00">sraiw a4,s3,0x15</text>
-<text text-anchor="start" x="562.26" y="-1229.3" font-family="Times,serif" font-size="14.00">debug return (short)x;</text>
+<text text-anchor="start" x="562.26" y="-1229.3" font-family="Times,serif" font-size="14.00" fill='red'> return (short)x;</text>
 <text text-anchor="start" x="562.26" y="-1214.3" font-family="Times,serif" font-size="14.00">sh t4,0(t1)</text>
-<text text-anchor="start" x="562.26" y="-1199.3" font-family="Times,serif" font-size="14.00">debug if (sign != (x &gt;&gt; 15))</text>
+<text text-anchor="start" x="562.26" y="-1199.3" font-family="Times,serif" font-size="14.00" fill='red'> if (sign != (x &gt;&gt; 15))</text>
 <text text-anchor="start" x="562.26" y="-1184.3" font-family="Times,serif" font-size="14.00">bne a4,t3,aab0 &lt;xmp3_PolyphaseStereo+0x3d8&gt;</text>
 <polyline fill="none" stroke="black" points="554.26,-1176.5 1273.26,-1176.5 "/>
 <text text-anchor="middle" x="740.26" y="-1161.3" font-family="Times,serif" font-size="14.00">No Jump</text>
@@ -1078,20 +1078,20 @@
 <title>43696</title>
 <polygon fill="none" stroke="black" points="1164.26,-6281.5 1164.26,-6567.5 1543.26,-6567.5 1543.26,-6281.5 1164.26,-6281.5"/>
 <text text-anchor="start" x="1172.26" y="-6552.3" font-family="Times,serif" font-size="14.00">c.ldsp s6,0(sp)</text>
-<text text-anchor="start" x="1172.26" y="-6537.3" font-family="Times,serif" font-size="14.00">debug x = sign ^ ((1 &lt;&lt; 15) &#45; 1);</text>
+<text text-anchor="start" x="1172.26" y="-6537.3" font-family="Times,serif" font-size="14.00" fill='red'> x = sign ^ ((1 &lt;&lt; 15) &#45; 1);</text>
 <text text-anchor="start" x="1172.26" y="-6522.3" font-family="Times,serif" font-size="14.00">c.ldsp t2,40(sp)</text>
 <text text-anchor="start" x="1172.26" y="-6507.3" font-family="Times,serif" font-size="14.00">c.mv s10,t1</text>
 <text text-anchor="start" x="1172.26" y="-6492.3" font-family="Times,serif" font-size="14.00">xor s0,t3,t2</text>
-<text text-anchor="start" x="1172.26" y="-6477.3" font-family="Times,serif" font-size="14.00">debug pcm += 2;</text>
+<text text-anchor="start" x="1172.26" y="-6477.3" font-family="Times,serif" font-size="14.00" fill='red'> pcm += 2;</text>
 <text text-anchor="start" x="1172.26" y="-6462.3" font-family="Times,serif" font-size="14.00">addi a5,s6,4 # 2000004 &lt;_heap_end+0x1dbf974&gt;</text>
-<text text-anchor="start" x="1172.26" y="-6447.3" font-family="Times,serif" font-size="14.00">debug for (i = 15; i &gt; 0; i&#45;&#45;)</text>
+<text text-anchor="start" x="1172.26" y="-6447.3" font-family="Times,serif" font-size="14.00" fill='red'> for (i = 15; i &gt; 0; i&#45;&#45;)</text>
 <text text-anchor="start" x="1172.26" y="-6432.3" font-family="Times,serif" font-size="14.00">addi s8,s10,&#45;4</text>
 <text text-anchor="start" x="1172.26" y="-6417.3" font-family="Times,serif" font-size="14.00">c.ldsp a7,152(sp)</text>
-<text text-anchor="start" x="1172.26" y="-6402.3" font-family="Times,serif" font-size="14.00">debug return (short)x;</text>
+<text text-anchor="start" x="1172.26" y="-6402.3" font-family="Times,serif" font-size="14.00" fill='red'> return (short)x;</text>
 <text text-anchor="start" x="1172.26" y="-6387.3" font-family="Times,serif" font-size="14.00">sh s0,2(s10)</text>
-<text text-anchor="start" x="1172.26" y="-6372.3" font-family="Times,serif" font-size="14.00">debug pcm += 2;</text>
+<text text-anchor="start" x="1172.26" y="-6372.3" font-family="Times,serif" font-size="14.00" fill='red'> pcm += 2;</text>
 <text text-anchor="start" x="1172.26" y="-6357.3" font-family="Times,serif" font-size="14.00">c.sdsp a5,0(sp)</text>
-<text text-anchor="start" x="1172.26" y="-6342.3" font-family="Times,serif" font-size="14.00">debug for (i = 15; i &gt; 0; i&#45;&#45;)</text>
+<text text-anchor="start" x="1172.26" y="-6342.3" font-family="Times,serif" font-size="14.00" fill='red'> for (i = 15; i &gt; 0; i&#45;&#45;)</text>
 <text text-anchor="start" x="1172.26" y="-6327.3" font-family="Times,serif" font-size="14.00">c.sdsp s8,8(sp)</text>
 <text text-anchor="start" x="1172.26" y="-6312.3" font-family="Times,serif" font-size="14.00">beq a7,s2,ae68 &lt;xmp3_PolyphaseStereo+0x790&gt;</text>
 <polyline fill="none" stroke="black" points="1164.26,-6304.5 1543.26,-6304.5 "/>
@@ -1109,7 +1109,7 @@
 <g id="node29" class="node">
 <title>1000129</title>
 <polygon fill="none" stroke="black" points="899.76,-1080.5 899.76,-1116.5 1041.76,-1116.5 1041.76,-1080.5 899.76,-1080.5"/>
-<text text-anchor="start" x="907.76" y="-1094.8" font-family="Times,serif" font-size="14.00">debug pcm += 2;</text>
+<text text-anchor="start" x="907.76" y="-1094.8" font-family="Times,serif" font-size="14.00" fill='red'> pcm += 2;</text>
 </g>
 <!-- 44588&#45;&gt;1000129 -->
 <g id="edge35" class="edge">
@@ -1121,7 +1121,7 @@
 <g id="node22" class="node">
 <title>1000088</title>
 <polygon fill="none" stroke="black" points="1223.76,-6604.5 1223.76,-6640.5 1365.76,-6640.5 1365.76,-6604.5 1223.76,-6604.5"/>
-<text text-anchor="start" x="1231.76" y="-6618.8" font-family="Times,serif" font-size="14.00">debug pcm += 2;</text>
+<text text-anchor="start" x="1231.76" y="-6618.8" font-family="Times,serif" font-size="14.00" fill='red'> pcm += 2;</text>
 </g>
 <!-- 43668&#45;&gt;1000088 -->
 <g id="edge22" class="edge">
@@ -1135,18 +1135,18 @@
 <polygon fill="none" stroke="black" points="1133.26,-772.5 1133.26,-1043.5 1504.26,-1043.5 1504.26,-772.5 1133.26,-772.5"/>
 <text text-anchor="start" x="1141.26" y="-1028.3" font-family="Times,serif" font-size="14.00">c.ldsp s6,0(sp)</text>
 <text text-anchor="start" x="1141.26" y="-1013.3" font-family="Times,serif" font-size="14.00">c.mv s10,t1</text>
-<text text-anchor="start" x="1141.26" y="-998.3" font-family="Times,serif" font-size="14.00">debug x &gt;&gt;= fracBits;</text>
+<text text-anchor="start" x="1141.26" y="-998.3" font-family="Times,serif" font-size="14.00" fill='red'> x &gt;&gt;= fracBits;</text>
 <text text-anchor="start" x="1141.26" y="-983.3" font-family="Times,serif" font-size="14.00">sraiw s0,s3,0x6</text>
-<text text-anchor="start" x="1141.26" y="-968.3" font-family="Times,serif" font-size="14.00">debug pcm += 2;</text>
+<text text-anchor="start" x="1141.26" y="-968.3" font-family="Times,serif" font-size="14.00" fill='red'> pcm += 2;</text>
 <text text-anchor="start" x="1141.26" y="-953.3" font-family="Times,serif" font-size="14.00">addi a5,s6,4</text>
-<text text-anchor="start" x="1141.26" y="-938.3" font-family="Times,serif" font-size="14.00">debug for (i = 15; i &gt; 0; i&#45;&#45;)</text>
+<text text-anchor="start" x="1141.26" y="-938.3" font-family="Times,serif" font-size="14.00" fill='red'> for (i = 15; i &gt; 0; i&#45;&#45;)</text>
 <text text-anchor="start" x="1141.26" y="-923.3" font-family="Times,serif" font-size="14.00">addi s8,s10,&#45;4</text>
 <text text-anchor="start" x="1141.26" y="-908.3" font-family="Times,serif" font-size="14.00">c.ldsp a7,152(sp)</text>
-<text text-anchor="start" x="1141.26" y="-893.3" font-family="Times,serif" font-size="14.00">debug return (short)x;</text>
+<text text-anchor="start" x="1141.26" y="-893.3" font-family="Times,serif" font-size="14.00" fill='red'> return (short)x;</text>
 <text text-anchor="start" x="1141.26" y="-878.3" font-family="Times,serif" font-size="14.00">sh s0,2(s10)</text>
-<text text-anchor="start" x="1141.26" y="-863.3" font-family="Times,serif" font-size="14.00">debug pcm += 2;</text>
+<text text-anchor="start" x="1141.26" y="-863.3" font-family="Times,serif" font-size="14.00" fill='red'> pcm += 2;</text>
 <text text-anchor="start" x="1141.26" y="-848.3" font-family="Times,serif" font-size="14.00">c.sdsp a5,0(sp)</text>
-<text text-anchor="start" x="1141.26" y="-833.3" font-family="Times,serif" font-size="14.00">debug for (i = 15; i &gt; 0; i&#45;&#45;)</text>
+<text text-anchor="start" x="1141.26" y="-833.3" font-family="Times,serif" font-size="14.00" fill='red'> for (i = 15; i &gt; 0; i&#45;&#45;)</text>
 <text text-anchor="start" x="1141.26" y="-818.3" font-family="Times,serif" font-size="14.00">sd s8,8(sp)</text>
 <text text-anchor="start" x="1141.26" y="-803.3" font-family="Times,serif" font-size="14.00">bne a7,s2,aad0 &lt;xmp3_PolyphaseStereo+0x3f8&gt;</text>
 <polyline fill="none" stroke="black" points="1133.26,-795.5 1504.26,-795.5 "/>
@@ -1176,8 +1176,8 @@
 <g id="node30" class="node">
 <title>1000136</title>
 <polygon fill="none" stroke="black" points="1207.76,-697.5 1207.76,-735.5 1281.76,-735.5 1281.76,-697.5 1207.76,-697.5"/>
-<text text-anchor="start" x="1215.76" y="-720.3" font-family="Times,serif" font-size="14.00">debug }</text>
-<text text-anchor="start" x="1215.76" y="-705.3" font-family="Times,serif" font-size="14.00">debug}</text>
+<text text-anchor="start" x="1215.76" y="-720.3" font-family="Times,serif" font-size="14.00" fill='red'> }</text>
+<text text-anchor="start" x="1215.76" y="-705.3" font-family="Times,serif" font-size="14.00" fill='red'>}</text>
 </g>
 <!-- 44616&#45;&gt;1000136 -->
 <g id="edge38" class="edge">
@@ -1209,7 +1209,7 @@
 <text text-anchor="start" x="944.76" y="-480.3" font-family="Times,serif" font-size="14.00">c.ldsp s11,160(sp)</text>
 <text text-anchor="start" x="944.76" y="-465.3" font-family="Times,serif" font-size="14.00">c.addi16sp sp,256</text>
 <text text-anchor="start" x="944.76" y="-450.3" font-family="Times,serif" font-size="14.00">c.jr ra</text>
-<text text-anchor="start" x="944.76" y="-435.3" font-family="Times,serif" font-size="14.00">debug *(pcm + 1) = ClipToShort((int)SAR64(sum1R, (32 &#45; CSHIFT)), DEF_NFRACBITS);</text>
+<text text-anchor="start" x="944.76" y="-435.3" font-family="Times,serif" font-size="14.00" fill='red'> *(pcm + 1) = ClipToShort((int)SAR64(sum1R, (32 &#45; CSHIFT)), DEF_NFRACBITS);</text>
 </g>
 <!-- 43696&#45;&gt;44648 -->
 <g id="edge26" class="edge">
@@ -1233,7 +1233,7 @@
 <g id="node27" class="node">
 <title>1000116</title>
 <polygon fill="none" stroke="black" points="14.26,-1722.5 14.26,-1758.5 731.26,-1758.5 731.26,-1722.5 14.26,-1722.5"/>
-<text text-anchor="start" x="22.26" y="-1736.8" font-family="Times,serif" font-size="14.00">debug *(pcm + 2 * 2 * i + 0) = ClipToShort((int)SAR64(sum2L, (32 &#45; CSHIFT)), DEF_NFRACBITS);</text>
+<text text-anchor="start" x="22.26" y="-1736.8" font-family="Times,serif" font-size="14.00" fill='red'> *(pcm + 2 * 2 * i + 0) = ClipToShort((int)SAR64(sum2L, (32 &#45; CSHIFT)), DEF_NFRACBITS);</text>
 </g>
 <!-- 1000109&#45;&gt;1000116 -->
 <g id="edge29" class="edge">

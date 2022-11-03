@@ -2,6 +2,7 @@
 Module containing main building blocks to parse assembly and draw CFGs.
 """
 
+from pickle import NONE
 import re
 import sys
 import tempfile
@@ -39,6 +40,9 @@ class BasicBlock:
         self.instructions = []
         self.jump_edge = None
         self.no_jump_edge = None
+        self.form_fucntion = ""
+    def set_form_function(self,function):
+        self.form_fucntion = function
 
     def add_instruction(self, instruction):
         """
@@ -245,13 +249,13 @@ class riscvTargetInfo:
         #   call   *0x26a16(%rip)
         #   call   0x555555555542
         #   addr32 call 0x55555558add0
-        return instruction.opcode in ('call')\
+        return str(instruction.opcode) in ('call')\
             and instruction.opcode not in ('beq', 'bne', 'blt', 'bge', 'bltu', 'bgeu','blez','bnez','beqz','bnec','bgtz','bgez','bltz')
 
     def is_jump(self, instruction):
         
         # print(instruction)
-        return instruction.opcode in ('j', 'jle', 'jl', 'je', 'jne', 'jge','je','jal') and not self.is_call(instruction)
+        return instruction.opcode in ('c.j','j', 'jle', 'jl', 'je', 'jne', 'jge','je','jal') and not self.is_call(instruction)
         # return instruction.opcode[0] == 'j'
         # def is_jump2(self, instruction):
         # return instruction.opcode[0] == 'jal'
@@ -274,14 +278,14 @@ class riscvTargetInfo:
 
     def is_unconditional_jump(self, instruction):
         
-        return instruction.opcode.startswith('jmp') 
+        return str(instruction.opcode) in ('jmp') 
         
 
     def is_sink(self, instruction):
         """
         Is this an instruction which terminates function execution e.g. return?
         """
-        return instruction.opcode.startswith('ret')
+        return  str(instruction.opcode) in ('ret') 
 
 
 class ARMTargetInfo:
@@ -336,6 +340,7 @@ class Instruction:
         self.ops = ops
         self.target = target
         self.info = target_info
+        self.form_fucntion =""
     
         if imm is not None and (self.is_jump() or self.is_call()):
             # print("test")
@@ -344,7 +349,10 @@ class Instruction:
                 self.target = imm
             else:
                 self.target.merge(imm)
-        
+    
+    def set_form_function(self,form_fucntion):
+        self.form_fucntion=form_fucntion
+
 
     def is_call(self):
         return self.info.is_call(self)
@@ -442,7 +450,7 @@ def parse_target(line):
     """
     Parses optional instruction branch target hint
     """
-    target_match = re.match(r'\s*<([a-zA-Z_@0-9.*]+)([+-]0x[0-9a-f]+|[+-][0-9]+)?>(.*)', line)
+    target_match = re.match(r'\s*<([a-zA-Z_@0-9.*$]+)([+-]0x[0-9a-f]+|[+-][0-9]+)?>(.*)', line)
     if target_match is None:
         return None, line
     offset = target_match[2] or '+0'
@@ -473,39 +481,56 @@ def parse_comment(line, target_info):
         target = Address(abs_addr)
     return target, imm_match[3]
 
-
+source_code_index=1000000
 def parse_line(line, lineno, function_name, fmt, target_info):
     """
     Parses a single line of assembly to create Instruction instance
     """
-
+    
+    line_back = line
+    is_source_code = 0
+    
     # Strip GDB prefix and leading whites
     if line.startswith('=> '):
         # Strip GDB marker
         line = line[3:]
     line = line.lstrip()
-
+    line = line.rstrip()
     address, line = parse_address(line)
     if address is None:
-        return None
+        line = line_back
+        is_source_code=1
+        global source_code_index
+        address = Address(source_code_index, None, None)
+        source_code_index+=1
+        # return None
 
     if fmt == InputFormat.OBJDUMP:
         encoding, line = parse_encoding(line)
         if not line:
             return encoding
-
-    original_line = line
+    if is_source_code == 1 :
+        line = line_back
+    if is_source_code == 1 :
+        original_line = "debug"+line
+    else:
+        original_line = line
     body, opcode, ops, line = parse_body(line, target_info)
     if opcode is None:
-        return None
-
+        if(is_source_code!=1):
+            return None
+    
     target, line = parse_target(line)
     print(parse_target(line))
-
+    
     imm, line = parse_comment(line, target_info)
-    if line:
-        # Expecting complete parse
-        return None
+    # if is_source_code == 1 :
+    #     line = line_back
+    # print(line)
+    if(is_source_code!=1):
+        if line:
+            # Expecting complete parse
+            return None
     # Set base symbol for relative addresses
     if address.base is None:
         address.base = function_name
@@ -523,6 +548,7 @@ class JumpTable:
     def __init__(self, instructions):
         # Address where the jump begins and value which address
         # to jump to. This also includes calls.
+        
         self.abs_sources = {}
         self.rel_sources = {}
 
@@ -583,9 +609,10 @@ def parse_lines(lines, skip_calls, target_name):  # noqa pylint: disable=unused-
             current_function_name = function_name
             current_format = fmt
             continue
-
         instruction_or_encoding = parse_line(line, num, current_function_name, current_format, target_info)
+     
         print(instruction_or_encoding)
+        # instruction_or_encoding.set_form_function(current_function_name)
         if isinstance(instruction_or_encoding, Encoding):
             # Partial encoding for previous instruction, skip it
             continue
@@ -598,7 +625,9 @@ def parse_lines(lines, skip_calls, target_name):  # noqa pylint: disable=unused-
 
         if line.strip() == '':
             continue
-
+        
+        # if(line == None):
+        #     continue
         print(f'Unexpected assembly at line {num}:\n  {line}')
         sys.exit(1)
 
@@ -624,7 +653,7 @@ def parse_lines(lines, skip_calls, target_name):  # noqa pylint: disable=unused-
                 instruction.target = Address(0)
             if(instruction.opcode in ('beqz','bnez','blez','bgez','bltz','bgtz')):
                 instruction.target.abs = int(instruction.ops[1], 16)
-            else:
+            elif(instruction.opcode in('beq', 'bne', 'blt', 'bge')):
                 instruction.target.abs = int(instruction.ops[2], 16)
         if (instruction.target is None or instruction.target.abs is None) \
                 and instruction.is_compressbranch():
@@ -712,6 +741,7 @@ def parse_lines(lines, skip_calls, target_name):  # noqa pylint: disable=unused-
         # block to designate end of the function.
         end_block = BasicBlock('end_of_function')
         dummy_instruction = Instruction('', 'end of function', 0, None, None, [], None, None, target_info)
+        dummy_instruction.set_form_function(current_function_name)
         end_block.add_instruction(dummy_instruction)
         previous_jump_block.add_no_jump_edge(end_block.key)
         basic_blocks[end_block.key] = end_block
@@ -747,26 +777,45 @@ print("Following is the Depth-First Search")
 # dfs(visited, graph, 'a')
 # Using a Python dictionary to act as an adjacency list
 graph = {
-
+    # key:[value,value2],...
 }
 visited = set() # Set to keep track of visited nodes of graph.
 v=[]
 t=[]
-def dfs(visited, graph, node,search):  #function for dfs 
+find_block=0
+def dfs(visited, graph, node,search,avoid):  #function for dfs 
     if node not in visited:
         print (node)
-        v.append(node)
+        # v.append(node)
         if(search == node): 
             print("find")
+            find_block = int(node)
             for x in v:
                 t.append(x)
-        # print (type(node))
+            return
+    
+        v.append(node)
         visited.add(node)
-        if node in graph:
+        if node in graph and node not in avoid:
             for neighbour in graph[node]:
-                dfs(visited, graph, neighbour,search)
-                # v.append(neighbour)
-colors = ['green','red']
+                v.append(neighbour)
+                dfs(visited, graph, neighbour,search,avoid)
+                
+colors = ['green','blue','red','purple']
+
+def replaceline(infile, outfile):
+    infopen = open(infile, 'r', encoding="utf-8")
+    outfopen = open(outfile, 'w', encoding="utf-8")
+
+    lines = infopen.readlines()
+    for line in lines:
+        if line.split():
+            outfopen.writelines(str(line).replace(">debug", " fill='"'red'"'>"))
+        else:
+            outfopen.writelines("")
+
+    infopen.close()
+    outfopen.close()
 
 def draw_cfg(function_name,get_print_list, view):
     dot=None
@@ -786,10 +835,13 @@ def draw_cfg(function_name,get_print_list, view):
             elif basic_block.no_jump_edge:
                 graph[str(basic_block.key)].append(str(basic_block.no_jump_edge))
             # disable for Serach
+            # for i in basic_block.instructions:
+            #     basic_block.set_form_function(i.form_fucntion)
+            
             tmp =[i.text for i in basic_block.instructions]
             print(tmp)
             for x in tmp:
-                if "343a669 <_stack+0x321a669>" in x:
+                if "aa94 <xmp3_PolyphaseStereo+0x3bc>" in x:
                         print([i.text for i in basic_block.instructions])
                         find.append(str(basic_block.key))
 
@@ -799,36 +851,95 @@ def draw_cfg(function_name,get_print_list, view):
     print(graph)
     # visited.add('722')
     for y in find:
-        dfs(visited, graph,'936', str(y))
+        dfs(visited, graph,'1000000', str(y),graph[find[0]])
+    print("path")
+    print(t)
+    print(find)
+    print(graph[find[0]])
     # print(t)
-
+    newt=['1000000']
+    find_off =0
+    find_close=0
+    # print(get_print_list)
     for get_child in get_print_list:
         # for address, basic_block in x[1].items:
         #     print(address)
-        for address, basic_block in get_child[1].items():
-            key = str(address)
-            graph[key] =[]
-            if key in t:
-                dot.node(key, shape='record', label=basic_block.get_label(),  style="filled",fillcolor=colors[0])
-            else:
-                dot.node(key, shape='record', label=basic_block.get_label())
+            # if(key != "end_of_function"):
+
+
         for basic_block in  get_child[1].values():
             if basic_block.jump_edge:
                 if basic_block.no_jump_edge is not None:
-                    if str(basic_block.no_jump_edge) in t:
-                        dot.edge(f'{basic_block.key}:s0', str(basic_block.no_jump_edge),color=colors[1])
+                    
+                    if str(basic_block.no_jump_edge) in t and find_off==0:
+                        # print(basic_block.no_jump_edge)
+                        if( str(basic_block.no_jump_edge) in find):
+                            find_off= 1
+                        if(basic_block.no_jump_edge != "end_of_function"):
+                            if( find_block < int(basic_block.no_jump_edge)):
+                                dot.edge(f'{basic_block.key}:s0', str(basic_block.no_jump_edge),color=colors[1])
+                            else:
+                                dot.edge(f'{basic_block.key}:s0', str(basic_block.no_jump_edge))    
+                        newt.append(str(basic_block.no_jump_edge))
                     else :
                         dot.edge(f'{basic_block.key}:s0', str(basic_block.no_jump_edge))
-                if str(basic_block.jump_edge) in t:        
-                    dot.edge(f'{basic_block.key}:s1', str(basic_block.jump_edge),color=colors[1])
+   
+                if str(basic_block.jump_edge) in t  and find_off==0:     
+                       
+                    if(basic_block.jump_edge != "end_of_function"):
+                        if( find_block < int(basic_block.jump_edge)):
+                            if( int(basic_block.key) == int(basic_block.jump_edge) ):
+                                dot.edge(f'{basic_block.key}:s1', str(basic_block.jump_edge),color=colors[3])
+                            else:
+                                if ( find_off==0):
+                                    dot.edge(f'{basic_block.key}:s1', str(basic_block.jump_edge),color=colors[2])
+                                else:
+                                    dot.edge(f'{basic_block.key}:s1', str(basic_block.jump_edge))
+                            if( str(basic_block.jump_edge) in find):
+                                find_off= 1
+                        newt.append(str(basic_block.jump_edge))
+                    else:
+                        dot.edge(f'{basic_block.key}:s1', str(basic_block.jump_edge))
+           
                 else:
                     dot.edge(f'{basic_block.key}:s1', str(basic_block.jump_edge))
+               
             elif basic_block.no_jump_edge:
-                if str(basic_block.no_jump_edge) in t:
-                    dot.edge(str(basic_block.key), str(basic_block.no_jump_edge),color=colors[1])
+                   
+                if str(basic_block.no_jump_edge) in t  and find_off==0:
+                    if(basic_block.no_jump_edge != "end_of_function"):
+                        if( str(basic_block.no_jump_edge) in find):
+                            find_off= 1
+                        if( find_block < int(basic_block.no_jump_edge)):
+                            dot.edge(str(basic_block.key), str(basic_block.no_jump_edge),color=colors[1])
+                        else:
+                            dot.edge(str(basic_block.key), str(basic_block.no_jump_edge))
+                        newt.append(str(basic_block.no_jump_edge))
                 else:
                     dot.edge(str(basic_block.key), str(basic_block.no_jump_edge))
-                
+                    
+            if(basic_block.jump_edge != "end_of_function" or basic_block.no_jump_edge != "end_of_function"):
+                if( str(basic_block.jump_edge) == find or str(basic_block.no_jump_edge) == find):
+                    find_off= 1
+
+        for address, basic_block in get_child[1].items():
+            key = str(address)
+            graph[key] =[]
+
+            if key in newt and find_close==0 :
+                dot.node(key, shape='record', label=basic_block.get_label(),  style="filled",fillcolor=colors[0])
+            else:
+                dot.node(key, shape='record', label=basic_block.get_label())
+            
+            if( key == find[0]):
+                find_close= 1
+                    
+            # else:
+            #     print(basic_block.form_fucntion)
+            
+    # if(find_off== 0):
+    #     print ("no find")
+   
     if view:
         dot.format = 'gv'
         with tempfile.NamedTemporaryFile(mode='w+b', prefix=function_name) as filename:
@@ -838,4 +949,7 @@ def draw_cfg(function_name,get_print_list, view):
         dot.format = 'svg'
         dot.render(filename=function_name, cleanup=True)
         print(f'Saved CFG to a file {function_name}.{dot.format}')
+        # print(f'{function_name}.{dot.format}')
+        replaceline(f'{function_name}.{dot.format}', f'new{function_name}.{dot.format}')
+
 
