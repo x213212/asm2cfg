@@ -856,17 +856,12 @@ def draw_cfg(function_name,get_print_list, view):
     print(t)
     print(find)
     print(graph[find[0]])
-    # print(t)
+ 
     newt=['1000000']
     find_off =0
     find_close=0
     # print(get_print_list)
     for get_child in get_print_list:
-        # for address, basic_block in x[1].items:
-        #     print(address)
-            # if(key != "end_of_function"):
-
-
         for basic_block in  get_child[1].values():
             if basic_block.jump_edge:
                 if basic_block.no_jump_edge is not None:
