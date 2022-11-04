@@ -394,9 +394,9 @@ def parse_address(line):
     """
     address_match = re.match(fr'^\s*(?:0x)?({HEX_PATTERN})\s*(?:<([+-][0-9]+)>)?:(.*)', line)
     if address_match is None:
-        return None, line
+        return None, line,None
     address = Address(int(address_match[1], 16), None, int(address_match[2]) if address_match[2] else None)
-    return address, address_match[3]
+    return address, address_match[3],int(address_match[1], 16)
 
 
 def split_nth(string, count):
@@ -496,7 +496,8 @@ def parse_line(line, lineno, function_name, fmt, target_info):
         line = line[3:]
     line = line.lstrip()
     line = line.rstrip()
-    address, line = parse_address(line)
+    # org_address = re.match(fr'^\s*(?:0x)?({HEX_PATTERN})\s*(?:<([+-][0-9]+)>)?:(.*)', line)
+    address, line,org_address = parse_address(line)
     if address is None:
         line = line_back
         is_source_code=1
@@ -509,12 +510,15 @@ def parse_line(line, lineno, function_name, fmt, target_info):
         encoding, line = parse_encoding(line)
         if not line:
             return encoding
+    # print(str(org_address))
+    if(org_address == None ):
+        org_address=""
     if is_source_code == 1 :
-        line = line_back
+        line = str((org_address))+""+str(line_back)
     if is_source_code == 1 :
         original_line = "debug"+line
     else:
-        original_line = line
+        original_line = str(hex(org_address))+""+line
     body, opcode, ops, line = parse_body(line, target_info)
     if opcode is None:
         if(is_source_code!=1):
@@ -801,7 +805,7 @@ def dfs(visited, graph, node,search,avoid):  #function for dfs
                 v.append(neighbour)
                 dfs(visited, graph, neighbour,search,avoid)
                 
-colors = ['green','blue','red','purple']
+colors = ['#33FFA8','blue','red','purple']
 
 def replaceline(infile, outfile):
     infopen = open(infile, 'r', encoding="utf-8")
@@ -841,7 +845,7 @@ def draw_cfg(function_name,get_print_list, view):
             tmp =[i.text for i in basic_block.instructions]
             print(tmp)
             for x in tmp:
-                if "aa94 <xmp3_PolyphaseStereo+0x3bc>" in x:
+                if "pcm += 2;" in x:
                         print([i.text for i in basic_block.instructions])
                         find.append(str(basic_block.key))
 
