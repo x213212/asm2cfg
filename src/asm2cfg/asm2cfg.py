@@ -250,7 +250,7 @@ class riscvTargetInfo:
         #   call   0x555555555542
         #   addr32 call 0x55555558add0
         return str(instruction.opcode) in ('call')\
-            and instruction.opcode not in ('beq', 'bne', 'blt', 'bge', 'bltu', 'bgeu','blez','bnez','beqz','bnec','bgtz','bgez','bltz')
+            and instruction.opcode not in ('beq', 'bne', 'blt', 'bge', 'bltu', 'bgeu','blez','bnez','beqz','bnec','bgtz','bgez','bltz','beqc')
 
     def is_jump(self, instruction):
         
@@ -265,7 +265,7 @@ class riscvTargetInfo:
         #   call   *0x26a16(%rip)
         #   call   0x555555555542
         #   addr32 call 0x55555558add0
-        return instruction.opcode in ('beq', 'bne', 'blt', 'bge', 'bltu', 'bgeu','blez','bnez','beqz','bnec','bgtz','bgez','bltz')
+        return instruction.opcode in ('beq', 'bne', 'blt', 'bge', 'bltu', 'bgeu','blez','bnez','beqz','bnec','bgtz','bgez','bltz','beqc')
     
     def is_compressbranch(self, instruction):
         # print(instruction)
@@ -450,7 +450,7 @@ def parse_target(line):
     """
     Parses optional instruction branch target hint
     """
-    target_match = re.match(r'\s*<([a-zA-Z_@0-9.*$]+)([+-]0x[0-9a-f]+|[+-][0-9]+)?>(.*)', line)
+    target_match = re.match(r'\s*<([a-zA-Z_@0-9.*$_]+)([+-]0x[0-9a-f]+|[+-][0-9]+)?>(.*)', line)
     if target_match is None:
         return None, line
     offset = target_match[2] or '+0'
@@ -509,12 +509,14 @@ def parse_line(line, lineno, function_name, fmt, target_info):
     if fmt == InputFormat.OBJDUMP:
         encoding, line = parse_encoding(line)
         if not line:
+            print(line)
             return encoding
     # print(str(org_address))
+   
     if(org_address == None ):
         org_address=""
     if is_source_code == 1 :
-        line = str((org_address))+""+str(line_back)
+        line = str((org_address))+"#"+str(line_back)
     if is_source_code == 1 :
         original_line = "debug"+line
     else:
@@ -657,8 +659,9 @@ def parse_lines(lines, skip_calls, target_name):  # noqa pylint: disable=unused-
                 instruction.target = Address(0)
             if(instruction.opcode in ('beqz','bnez','blez','bgez','bltz','bgtz')):
                 instruction.target.abs = int(instruction.ops[1], 16)
-            elif(instruction.opcode in('beq', 'bne', 'blt', 'bge')):
+            elif(instruction.opcode in('beq', 'bne', 'blt', 'bge','bgeu','bltu','beqc','bnec')):
                 instruction.target.abs = int(instruction.ops[2], 16)
+            print( "wqeeee")
         if (instruction.target is None or instruction.target.abs is None) \
                 and instruction.is_compressbranch():
             if instruction.target is None:
@@ -797,7 +800,6 @@ def dfs(visited, graph, node,search,avoid):  #function for dfs
             for x in v:
                 t.append(x)
             return
-    
         v.append(node)
         visited.add(node)
         if node in graph and node not in avoid:
@@ -842,12 +844,12 @@ def draw_cfg(function_name,get_print_list, view):
             # for i in basic_block.instructions:
             #     basic_block.set_form_function(i.form_fucntion)
             
-            tmp =[i.text for i in basic_block.instructions]
-            print(tmp)
-            for x in tmp:
-                if "pcm += 2;" in x:
-                        print([i.text for i in basic_block.instructions])
-                        find.append(str(basic_block.key))
+            # tmp =[i.text for i in basic_block.instructions]
+            # print(tmp)
+            # for x in tmp:
+            #     if "Next_Record->variant.var_1.Int_Comp" in x:
+            #             print([i.text for i in basic_block.instructions])
+            #             find.append(str(basic_block.key))
 
     
     print("Following is the Depth-First Search")
@@ -859,7 +861,7 @@ def draw_cfg(function_name,get_print_list, view):
     print("path")
     print(t)
     print(find)
-    print(graph[find[0]])
+    # print(graph[find[0]])
  
     newt=['1000000']
     find_off =0
@@ -930,8 +932,9 @@ def draw_cfg(function_name,get_print_list, view):
             else:
                 dot.node(key, shape='record', label=basic_block.get_label())
             
-            if( key == find[0]):
-                find_close= 1
+            if(len(find)> 0):
+                if( key == find[0]):
+                    find_close= 1
                     
             # else:
             #     print(basic_block.form_fucntion)
@@ -950,5 +953,6 @@ def draw_cfg(function_name,get_print_list, view):
         print(f'Saved CFG to a file {function_name}.{dot.format}')
         # print(f'{function_name}.{dot.format}')
         replaceline(f'{function_name}.{dot.format}', f'new{function_name}.{dot.format}')
+        print(f'Saved new CFG to a file new{function_name}.{dot.format}')
 
 
