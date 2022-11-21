@@ -53,4 +53,7 @@ def main():
 
     print("start draw")
 
-    asm2cfg.draw_cfg(function_name, get_print_list, args.view)
+    # asm2cfg.draw_cfg(function_name, get_print_list, args.view)
+    # tarjan algorithm    
+    asm2cfg.tarjans(function_name, get_print_list, args.view)
+
