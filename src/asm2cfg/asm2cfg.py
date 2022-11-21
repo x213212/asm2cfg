@@ -1,18 +1,120 @@
 """
 Module containing main building blocks to parse assembly and draw CFGs.
 """
-
+# from goto import with_goto
+import itertools
 from pickle import NONE
+from colour import Color
 import re
 import sys
 import tempfile
 from xml.sax import xmlreader
-
+# from goto import goto, label
 from graphviz import Digraph
 
 
 # TODO: make this a command-line flag
 VERBOSE = 0
+# Python program to find strongly connected components in a given
+# directed graph using Tarjan's algorithm (single DFS)
+#Complexity : O(V+E)
+  
+from collections import defaultdict
+  
+#This class represents an directed graph
+# using adjacency list representation
+class Graph:
+  
+    def __init__(self,vertices,):
+        #No. of vertices
+        self.V= vertices
+        
+        self.ans = []
+        # default dictionary to store graph
+        self.graph = defaultdict(list)
+         
+        self.Time = 0
+  
+    # function to add an edge to graph
+    def addEdge(self,u,v):
+        self.graph[u].append(v)
+         
+  
+    '''A recursive function that find finds and prints strongly connected
+    components using DFS traversal
+    u --> The vertex to be visited next
+    disc[] --> Stores discovery times of visited vertices
+    low[] -- >> earliest visited vertex (the vertex with minimum
+                discovery time) that can be reached from subtree
+                rooted with current vertex
+     st -- >> To store all the connected ancestors (could be part
+           of SCC)
+     stackMember[] --> bit/index array for faster check whether
+                  a node is in stack
+    '''
+    def SCCUtil(self,u, low, disc, stackMember, st):
+ 
+        # Initialize discovery time and low value
+        disc[u] = self.Time
+        low[u] = self.Time
+        self.Time += 1
+        stackMember[u] = True
+        st.append(u)
+ 
+        # Go through all vertices adjacent to this
+        for v in self.graph[u]:
+             
+            # If v is not visited yet, then recur for it
+            if disc[v] == -1 :
+             
+                self.SCCUtil(v, low, disc, stackMember, st)
+ 
+                # Check if the subtree rooted with v has a connection to
+                # one of the ancestors of u
+                # Case 1 (per above discussion on Disc and Low value)
+                low[u] = min(low[u], low[v])
+                         
+            elif stackMember[v] == True:
+ 
+                '''Update low value of 'u' only if 'v' is still in stack
+                (i.e. it's a back edge, not cross edge).
+                Case 2 (per above discussion on Disc and Low value) '''
+                low[u] = min(low[u], disc[v])
+ 
+        # head node found, pop the stack and print an SCC
+        w = -1 #To store stack extracted vertices
+        anscell = []
+        if low[u] == disc[u]:
+            while w != u:
+                w = st.pop()
+                print (w, end=" ")
+                anscell.append(w)
+                stackMember[w] = False
+            self.ans.append(anscell)
+            print()
+             
+     
+ 
+    #The function to do DFS traversal.
+    # It uses recursive SCCUtil()
+    def SCC(self):
+  
+        # Mark all the vertices as not visited
+        # and Initialize parent and visited,
+        # and ap(articulation point) arrays
+        disc = [-1] * (self.V)
+        low = [-1] * (self.V)
+        stackMember = [False] * (self.V)
+        st =[]
+         
+ 
+        # Call the recursive helper function
+        # to find articulation points
+        # in DFS tree rooted with vertex 'i'
+
+        for i in range(self.V):
+            if disc[i] == -1:
+                self.SCCUtil(i, low, disc, stackMember, st)
 
 
 def escape(instruction):
@@ -953,6 +1055,141 @@ def draw_cfg(function_name,get_print_list, view):
         print(f'Saved CFG to a file {function_name}.{dot.format}')
         # print(f'{function_name}.{dot.format}')
         replaceline(f'{function_name}.{dot.format}', f'new{function_name}.{dot.format}')
+        print(f'Saved new CFG to a file new{function_name}.{dot.format}')
+
+def tarjans(function_name,get_print_list, view):
+    dot=None
+    dot2=None
+    index =0
+    
+    dot = Digraph(name=function_name, comment=function_name, engine='dot')
+    dot2 = Digraph(name=function_name, comment=function_name, engine='dot')
+    # dot.graph_attr['rankdir'] = 'LR'
+    dot.attr('graph', label=function_name)
+    dot2.attr('graph', label=function_name)
+
+    total_node =0
+    index =0
+    cur_bb_index=0
+    for get_child in get_print_list:
+        for address, basic_block in get_child[1].items():
+            key = str(address)
+            graph[key] =[]
+            total_node+=1
+        for basic_block in  get_child[1].values():
+            bb_index_mapping[str(cur_bb_index)] =str(basic_block.key)
+            cur_bb_index+=1
+        cur_bb_index=0
+        break
+
+    cur_bb_index=0
+    tarjansans=[]
+
+    # Create a graph given in the above diagram
+    tarjans = Graph(total_node)
+    for get_child in get_print_list:
+        for basic_block in  get_child[1].values():
+            if basic_block.jump_edge:
+                key=0
+                jkey=0
+                nojkey=0
+                if basic_block.no_jump_edge is not None:
+                    for x in bb_index_mapping:
+                        if(bb_index_mapping[x] == str(basic_block.key)):
+                            key=int(x)
+                        elif(bb_index_mapping[x] == str(basic_block.no_jump_edge)):
+                            nojkey=int(x)
+                    tarjans.addEdge(key, nojkey)
+
+                for x in bb_index_mapping:
+                    if(bb_index_mapping[x] == str(basic_block.key)):
+                        key=int(x)
+                    elif(bb_index_mapping[x] == str(basic_block.jump_edge)):
+                        jkey=int(x)
+
+                if(jkey>cur_bb_index ):
+                    tarjans.addEdge(key, jkey)
+
+            elif basic_block.no_jump_edge:       
+                key=0
+                nojkey=0
+                for x in bb_index_mapping:
+                    if(bb_index_mapping[x] == str(basic_block.key)):
+                        key=int(x)
+                    elif(bb_index_mapping[x] == str(basic_block.no_jump_edge)):
+                        nojkey=int(x)
+
+                tarjans.addEdge(key, nojkey)
+        cur_bb_index=0
+        break
+    
+    print ("SSC in first graph ")
+    tarjans.SCC()
+    print(total_node)
+    print ("tarjans")
+    count_tarjans_ans_index=0
+    count_tarjans_ans_index_max=0
+    
+    for x in tarjans.ans:
+        if(len (x)>2):
+            count_tarjans_ans_index+=1
+            count_tarjans_ans_index_max+=1
+
+    green = Color("green")
+    green2 = Color("green")
+    colors = list(green.range_to(Color("blue"),count_tarjans_ans_index+1))
+    colors2 = list(green2.range_to(Color("red"),count_tarjans_ans_index+1))
+
+    for get_child in get_print_list:
+        for address, basic_block in get_child[1].items():
+            key = str(address)            
+            newkey =""
+            tarjankey=0
+            find =0
+         
+            for x in bb_index_mapping:
+                if(bb_index_mapping[x] == str(basic_block.key)):
+                    tarjankey=int(x)
+                    break
+            count_tarjans_ans_index=0
+            for x in tarjans.ans:
+                if(len (x)>2):
+                    # if(count_tarjans_ans_index==1):
+                    if(tarjankey in x):
+                        find=1
+                        print("tarjanskey:"+str(tarjankey))
+                        break
+                    count_tarjans_ans_index+=1
+            
+            if(find==0):
+                dot.node(key, shape='record', label=basic_block.get_label(),style="filled",fillcolor="white")
+            else:
+                if(count_tarjans_ans_index%2==0):
+                    dot.node(key, shape='record', label=basic_block.get_label(),style="filled",fillcolor=str(colors[count_tarjans_ans_index]))
+                else:
+                    dot.node(key, shape='record', label=basic_block.get_label(),style="filled",fillcolor=str(colors2[count_tarjans_ans_index_max-count_tarjans_ans_index]))
+                
+        for basic_block in get_child[1].values():
+            if basic_block.jump_edge:
+                if basic_block.no_jump_edge is not None:
+                    dot.edge(f'{basic_block.key}:s0', str(basic_block.no_jump_edge))
+                dot.edge(f'{basic_block.key}:s1', str(basic_block.jump_edge))
+            elif basic_block.no_jump_edge:
+                    dot.edge(f'{basic_block.key}:s0', str(basic_block.no_jump_edge))
+        break
+
+    if view:
+        dot.format = 'gv'
+        with tempfile.NamedTemporaryFile(mode='w+b', prefix=function_name) as filename:
+            # dot.view(filename.name)
+            print(f'Opening a file {filename.name}.{dot.format} with default viewer. Don\'t forget to delete it later.')
+    else:
+        dot.format = 'svg'
+        dot.render(filename=function_name, cleanup=True)
+        print(f'Saved CFG to a file {function_name}.{dot.format}')
+        replaceline_0(f'{function_name}.{dot.format}', f'back{function_name}.{dot.format}')
+        redundant(f'back{function_name}.{dot.format}', f'new{function_name}.{dot.format}')
+        # replaceline(f'back{function_name}.{dot.format}', f'new{function_name}.{dot.format}')
         print(f'Saved new CFG to a file new{function_name}.{dot.format}')
 
 
