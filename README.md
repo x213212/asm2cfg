@@ -359,3 +359,14 @@ https://x8795278.blogspot.com/2022/10/rsicv-asm2cfg.html
 
 # Add SVG Viewer & Tarjan’s Algorithm
 https://www.geeksforgeeks.org/tarjan-algorithm-find-strongly-connected-components/
+
+# gen asm
+```
+riscv64-unknown-elf-objdump -D -l -d <file:elf>
+```
+
+# run 
+Adjust to manual input
+```
+python -m src.asm2cfg 
+```
