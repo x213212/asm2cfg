@@ -1,369 +1,196 @@
-
 # asm2cfg
-![CI status](https://github.com/Kazhuu/asm2cfg/actions/workflows/ci.yml/badge.svg)
-[![codecov](https://codecov.io/gh/Kazhuu/asm2cfg/branch/main/graph/badge.svg?token=ZHLOJO8Q3V)](https://codecov.io/gh/Kazhuu/asm2cfg)
-[![Total alerts](https://img.shields.io/lgtm/alerts/g/Kazhuu/asm2cfg.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/Kazhuu/asm2cfg/alerts/)
-[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/Kazhuu/asm2cfg.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/Kazhuu/asm2cfg/context:python)
 
-Python command-line tool and GDB extension to view and save x86, ARM and objdump
-assembly files as control-flow graph (CFG) pdf files. From GDB debugging session
-use `viewcfg` command to view CFG and use `savecfg` command to save it to the
-pdf file.
+Assembly control-flow and call-graph visualization for x86, ARM and RISC-V.
+This fork preserves its RISC-V support, Tarjan cycle coloring and side-by-side
+SVG comparison, and separates parsing, graph analysis and rendering.
 
-<p align="center">
-  <img src="https://github.com/Kazhuu/asm2cfg/blob/main/images/example.png?raw=true" />
-</p>
+## 快速使用
 
-Program has been developed to support X86, ARM and objdump assembly outputs.
-Program is mostly tested with x86 assembly. ARM and objdump formats might not be
-fully supported. If you have any suggestions or find bugs, please open an issue
-or create a pull request. If you want to contribute, check
-[Development](#development) how to get started.
+需要 Python 3.10 以上，以及 Graphviz 的 `dot` 執行檔。安裝本 fork：
 
-## Table of Content
-
-<!-- vim-markdown-toc GFM -->
-
-* [Install](#install)
-* [Usage From GDB](#usage-from-gdb)
-* [Usage as Standalone](#usage-as-standalone)
-  * [Knowing Function Name](#knowing-function-name)
-  * [Disassemble Function](#disassemble-function)
-  * [Draw CFG](#draw-cfg)
-  * [Examples](#examples)
-* [Development](#development)
-  * [Python Environment](#python-environment)
-  * [Testing](#testing)
-  * [Code Linting](#code-linting)
-  * [Command-Line Interface](#command-line-interface)
-  * [GDB Integration](#gdb-integration)
-  * [Current Development Goals](#current-development-goals)
-
-<!-- vim-markdown-toc -->
-
-## Install
-
-Project can be installed with pip
-
-```
-pip install asm2cfg
+```sh
+python3 -m pip install .
+asm2cfg input.asm --target riscv --dominators --format html -o output
 ```
 
-To be able to view the dot files from GDB. External dot viewer is required. For
-this purpose [xdot](https://pypi.org/project/xdot/) can be used for example. Any
-other dot viewer will also do. To install this on Debian based distro run
+開啟 `output/report.html` 即可查看繁體中文說明、呼叫圖與各函式 CFG。
+報告是單一離線 HTML，不需要伺服器或外部 JavaScript。
 
-```
-sudo apt install xdot
-```
+- **CFG**：每個函式內的基本區塊、跳躍與接續執行關係。
+- **Call graph**：函式之間的呼叫，標出呼叫指令位址。
+- **SCC 底色**：Tarjan 找到的循環區域，包含單一節點自迴圈與兩節點迴圈。
+- **Dominator**：從入口到某區塊的所有已知 CFG 路徑，都必經的區塊；
+  `--dominators` 顯示最近的支配者（immediate dominator）。
+- **紅色粗回邊**：標示 L1、L2 迴圈編號，以及來源與目標位址。
+- **藍色點線**：直接支配關係，與實際 CFG 邊分開標示。
 
-Or Arch based
+SCC 與支配關係使用不同演算法。支配分析僅適用於從函式入口沿已知邊
+可抵達的區塊；間接跳躍的目標未解析時，圖形會明確標示這項限制。
 
-```
-sudo pacman -S xdot
-```
+## CLI examples
 
-To add extension to GDB you need to source the pip installed plugin to it. To
-find where pip placed GDB extension run `which gdb_asm2cfg` or in case if you
-use pyenv use `pyenv which gdb_asm2cfg`. Copy the path to the clipboard.
+Generate an objdump input without executing the binary:
 
-Then in you home directory if not already add `.gdbinit` file
-and place following line in it and replace path from the earlier step.
-
-```
-source <path-from-earlier>
+```sh
+objdump -d program > program.asm
+asm2cfg program.asm --target x86 --graph both --dominators -o output
 ```
 
-For example in my Linux machine line end up to be
+Supported inputs are GDB disassembly and objdump disassembly with function
+headers and instruction addresses. Raw source assembly without addresses is
+outside the parser's current scope. Source annotations from `objdump -S` are
+attached to real instructions; they are never assigned invented addresses.
 
-```
-source ~/.local/bin/gdb_asm2cfg.py
-```
+RISC-V remains the default target for this fork. Specify `--target x86` or
+`--target arm` explicitly for other architectures.
 
-Now when you start GDB no errors should be displayed and you are ready to go.
+```sh
+# One input containing several functions:
+asm2cfg program.asm --target riscv --graph calls --format svg -o output
 
-## Usage From GDB
+# Combine distinct functions dumped into separate files:
+asm2cfg main.asm helper.asm --target riscv --graph both -o output
 
-In GDB session this extension provides command `viewcfg` to view CFG with
-external dot viewer. Command `savecfg` saves the CFG to pdf file to current
-working directory with same name as the function being dumped. Both commands
-disassemble the current execution frame/function when the command is issued. To
-see help for these commands use `help` command like `help viewcfg`.
+# Full machine-readable analysis (does not invoke dot):
+asm2cfg program.asm --target riscv --format json -o output
 
-For example let's view main function from you favorite non-stripped executable.
-First run GDB until main function
+# CFG for one selected function; calls remain in the call graph:
+asm2cfg program.asm --target riscv --function main --skip-calls -o output
 
-```
-gdb -ex 'b main' -ex 'run' <executable>
-```
-
-Now run `viewcfg` to view CFG as a dot graph with external editor. Or run `savecfg`
-to save CFG to pdf file named `main.pdf` to current working directory. If
-function is stripped then memory address of the function will used as a name
-instead. For example `0x555555555faf-0x555555557008.pdf`.
-
-If assembly function is very large with a lot of jumps and calls to other
-functions. Then rendering the CFG can take a long time. So be patient or cancel
-rendering with Ctrl-C. To make the rendering faster you can skip function calls
-instructions from splitting the code to more blocks. To set this run `set
-skipcalls on` and then run earlier command again. Note that if function is long
-and has a lot of jumps inside itself, then rendering is still gonna take a long
-time. To have normal behavior again run `set skipcalls off`.
-
-## Usage as Standalone
-
-This method can be used with assembly files saved from ouput of objdump and GDB
-disassembly. Pip installation will come with `asm2cfg` command-line tool for
-this purpose.
-
-To use as standalone script you first need to dump assembly from GDB or objdump
-to the file which is explained below.
-
-### Knowing Function Name
-
-If you don't know the name of function you're looking for then you can also list
-all function names using GDB:
-
-```
-gdb -batch -ex 'b main' -ex r -ex 'info functions' ./test_executable
+# Export DOT without waiting for Graphviz layout:
+asm2cfg program.asm --target riscv --format dot -o output
 ```
 
-This will set breakpoint at function `main`, then
-run the program and print symbols from all loaded libraries.
+## Jump tables / switch 跳表
 
-For functions which come from main executable you can avoid running the program
-and simply do
+For common guarded x86 GCC/Clang-style switch sequences, provide the matching
+linked ELF so the analyzer can read the actual immutable table bytes:
 
-```
-gdb -batch -ex 'info functions' ./test_executable
-```
-
-If you want to narrow the search down you can also use regexp
-
-```
-gdb ... -ex 'info functions <regexp>' ...
+```sh
+objdump -d program > program.asm
+asm2cfg program.asm --target x86 --binary program --dominators --format html -o output
 ```
 
-### Disassemble Function
+Alternatively, supply an objdump section dump:
 
-Once you have the function name, you can produce its disassembly via
-
-```
-gdb -batch -ex 'b main' -ex r -ex 'pipe disassemble test_function | tee test_function.asm' ./test_executable
-```
-
-or
-
-```
-gdb -batch -ex 'set breakpoints pending on' -ex 'b test_function' -ex r -ex 'pipe disassemble | tee test_function.asm' ./test_executable
+```sh
+objdump -s -j .rodata program > rodata.txt
+asm2cfg program.asm --target x86 --table-data rodata.txt --format json -o output
 ```
 
-(the `set breakpoint pending on` command enables pending breakpoints and
-could be added to your `.gdbinit` instead)
+Supported patterns include signed 32-bit table-relative offsets and absolute
+pointer tables, using AT&T or Intel syntax. Recovery requires a dominating
+unsigned upper-bound check and a traceable dispatch sequence. The table is
+limited to 4,096 entries, and every entry must land on an actual instruction
+in the same function. Case edges are added to the CFG and dominance is
+rechecked after recovery. JSON retains every table index, including duplicate
+destinations. ELF reads use linked virtual addresses and do not execute or
+modify the binary; encoded instructions are checked against the binary first.
 
-For functions from main executable it's enough to do
+只提供反組譯而沒有表格資料時，間接跳躍會保留為未知。缺少上限檢查、
+表格位於可寫區段、資料截斷、目標不在指令邊界，或無法辨識的序列，也會
+保留未知。暫不處理未套用重定位的 object、執行期修改的表格、ASLR 後的
+GDB 位址、RISC-V／ARM 跳表及任意計算式間接跳躍。
 
+Formats: `svg` (default), `pdf`, `png`, `dot`, `json`, `html`.
+`--graph cfg|calls|both` defaults to `both`. JSON always contains the complete
+parsed analysis; `--function` selects visual CFG output only.
+`--render-timeout 30` bounds each Graphviz subprocess.
+`--no-loops` disables cycle coloring. `--view` explicitly opens an external viewer.
+Graphs default to left-to-right layout with increased spacing. Use
+`--direction vertical` for top-to-bottom layout. Full assembly remains visible;
+loop blocks retain strong colors and show L1/L2 identifiers and entry labels.
+
+Output filenames are derived safely from function names. Functions with
+colliding sanitized names receive separate filenames. Duplicate function names
+across input files are rejected; render separate versions into separate output
+directories and compare their SVGs.
+
+## SVG comparison
+
+Open [compare.html](compare.html) directly in a browser. Select or drop files
+independently on each side. Each pane supports multiple files, selection, zoom
+and fit-to-width; proportional synchronized scrolling can be disabled.
+The page works offline, uses no CDN, and does not upload files.
+SVGs are displayed as images rather than active embedded documents.
+
+## GDB extension
+
+After installing this checkout, source the installed `gdb_asm2cfg.py` script
+from GDB. For development, make the source package and its Graphviz Python
+dependency available to GDB's Python interpreter:
+
+```sh
+PYTHONPATH=src gdb -ex 'source src/gdb_asm2cfg.py' program
 ```
-gdb -batch -ex 'pipe disassemble test_function | tee test_function.asm' ./test_executable
-```
 
-You can also extract function's disassembly from `objdump` output:
+Commands: `viewcfg`, `savecfg`, `set skipcalls on|off`.
+Both commands detect the selected frame's architecture (x86, ARM or RISC-V).
+`savecfg` writes a PDF. `viewcfg` creates a DOT file and opens the system viewer.
 
-```
-objdump -d ./test_executable | sed -ne '/<test_function/,/^$/p' > test_executable.asm
-```
+## Architecture
 
-(this may be useful for specific non-native targets which lack GDB support).
+| Module | Responsibility |
+| --- | --- |
+| `model.py` | Instructions, addresses, functions, blocks and call sites |
+| `targets.py` | Architecture-specific call, branch and return semantics |
+| `parser.py` | GDB/objdump parsing, multiple functions and source annotations |
+| `cfg.py` | Per-function CFG construction and interprocedural call collection |
+| `memory.py` | Read immutable bytes from linked x86 ELF or objdump section dumps |
+| `jumptables.py` | Guarded switch-table recovery with bounds and target validation |
+| `analysis.py` | Iterative Tarjan SCC and immediate dominators |
+| `render.py` | Graphviz CFG/call graph styling and bounded rendering |
+| `report.py` | JSON and standalone Traditional Chinese HTML reports |
+| `command_line.py` | Input/output options and orchestration |
+| `asm2cfg.py` | Small public API used by existing single-function callers |
 
-### Draw CFG
+Algorithms keep state local to each analysis. Tarjan is O(V + E) and uses an
+explicit stack, so deep graphs do not hit Python's recursion limit. Dominators
+use a reverse-postorder fixed point. Neither algorithm enumerates execution
+paths. Graphviz layout can still be expensive on large graphs; DOT and JSON
+exports bypass layout.
 
-Now you have the assembly file. Time to turn that to CFG pdf file. Do that by giving it
-to `asm2cfg` command-line tool like so
+## Scope and limitations
 
-```
-asm2cfg test_function.asm
-```
-
-Asm2cfg by default expects x86 assembly files. If you want to use ARM assembly files,
-then provide `--target arm` command-line flag.
-
-Above command should output `test_function.pdf` file in the same directory where
-the executable was ran. If the assembly file is stripped then the function
-memory range is used as a name instead. For example
-`0x555555555faf-0x555555557008.pdf`.
-
-To view CFG instead of saving provide `-v` flag. And to skip function calls from
-splitting the code to further blocks provide `-c` flag. To show the help use
-`-h`.
-
-### Examples
-
-Repository includes examples which can be used to test the standalone
-functionality for x86, ARM and objdump.
-
-File `test_function.asm` is non-stripped assembly file and its
-corresponding output `test_function.pdf`.
-
-File `stripped_function.asm` contains
-stripped function and its corresponding output
-`stripped_function.pdf`.
-
-File `att_syntax.asm` is an example of non-stripped AT&T assembly.
-
-File `huge.asm` is a large stripped
-assembly function and its corresponding output `huge.pdf`. This can be used to
-test processing time of big functions.
-
-Files `objdump.asm` and `stripped_objdump.asm` are the regular and stripped
-objdump-based disassemblies of short functions.
-
-File `arm.asm` is ARM based assembly file and its corresponding pdf file is
-`arm.pdf`.
+- Direct calls are matched against function entries present in the input.
+  External callees remain visible without inventing their bodies.
+- Register-indirect calls remain unresolved, even if an objdump comment names
+  a pointer slot. Direct transfers outside a function are labeled tail calls;
+  custom calling conventions can require additional interpretation.
+- RISC-V classification follows standard ra/x1 and alternate x5 link-register
+  conventions, including compressed control transfers.
+- Jump-table recovery covers the guarded x86 patterns documented above.
+  Arbitrary indirect-target resolution, exception edges and proof of path
+  feasibility are not implemented. Return continuations assume calls can return.
+- Gray blocks are unreachable through known CFG edges. Unknown indirect edges
+  can make additional blocks reachable at runtime.
+- This tool visualizes supplied disassembly. Binary insertion, instruction
+  scheduling, address relocation and executable regeneration require a
+  separate rewriting backend.
 
 ## Development
 
-You want to contribute? You're very welcome to do so! This section will give you
-guidance how to setup development environment and test things locally.
-
-### Python Environment
-
-For development this project manages packages with pipenv. Pipenv is a tool to
-manage Python virtual environments and packages with much less pain compared to
-normal pip and virtualenv usage.
-
-Install pipenv for your system following the guide
-[here](https://pipenv.pypa.io/en/latest/).
-
-After installing pipenv. Create virtual environment and install all required
-packages to it. Run following at project root
-
-```
-pipenv install -d
+```sh
+python3 -m venv .venv
+.venv/bin/python -m pip install -e '.[test]'
+.venv/bin/python -m pytest test/
+.venv/bin/python -m flake8 src test
 ```
 
-Now you can activate the virtual environment with
+Graphviz, GDB and GCC are needed for rendering/integration tests. GDB tests
+compile their own small program and suppress external viewers. They require
+permission to trace that test process.
 
-```
-pipenv shell
-```
+Regression coverage includes RISC-V calls/returns, source annotations, unknown
+indirect targets, self loops, two-node loops, recursion, dominance diamonds,
+10,000-node graphs, and 100 seeded graph comparisons against NetworkX.
+Jump-table tests include real PIE/non-PIE compilation, both disassembly
+syntaxes, malformed tables, binary/disassembly mismatches, and GDB execution
+checks comparing each recovered destination with the actual indirect jump.
+The original jump-table regression now passes as a normal test.
 
-Now your `python` and `pip` commands will correspond to created virtual environment
-instead of your system's Python installation.
-
-To deactivate the environment, use
-
-```
-exit
-```
-
-### Testing
-
-This project uses [pytest](https://pypi.org/project/pytest/) for testing. Some
-test are written using Python's own unittest testing framework, but they work
-with pytest out of the box. Pytest style is preferred way to write tests.
-
-To run tests from project root, use `pytest` or
-
-```
-pipenv run pytest
-```
-
-During testing dot viewer might be opened if you have it installed. This is
-because GDB integration command `viewcfg` is tested, which will open external
-dot viewer. Just close it after it's opened. It should not affect the test run
-itself.
-
-### Code Linting
-
-Project uses [flake8](https://flake8.pycqa.org/en/latest/) and
-[pylint](https://pylint.org/) for code linting.
-
-To run flake8, use
-
-```
-flake8
-```
-
-And to run pylint use
-
-```
-pylint src test
-```
-
-Both commands should not print any errors.
-
-### Command-Line Interface
-
-To test command-line interface of asm2cfg wihtout installing the package. You
-can execute module directly. For example to print help
-
-```
-python -m src.asm2cfg -h
-```
-
-Standalone method can be used to try out the examples under `examples` folder as
-well. For example following command should generate `main.pdf` file to current
-working directory.
-
-```
-python -m src.asm2cfg -c examples/huge.asm
-```
-
-### GDB Integration
-
-Before testing GDB functionality, make sure asm2cfg is not installed with pip!
-This can lead to GDB using code from pip installed asm2cfg package instead of
-code from this repository!
-
-Also pipenv cannot be used with GDB. You need to install required packages to
-your system's Python pip. This is because your installed GDB is linked against
-system's Python interpreter and will use it, instead of active virtual
-environment. If packages are not installed to your system's pip. You are likely
-to receive following error messages when trying to use asm2cfg with GDB
-
-```
-ModuleNotFoundError: No module named 'graphviz'
-```
-
-To fix this, install required packages to your system's pip without active
-virtual environment. Currently GDB integration only requires graphviz.
-
-```
-pip install graphviz
-```
-
-To use asm2cfg GDB related functionality. Use following line from
-project root.
-
-```
-PYTHONPATH=${PWD}/src gdb -ex 'source src/gdb_asm2cfg.py'
-```
-
-This will set Python import path so that GDB can import code from this
-repository without installing the package. After this you should be able to use
-commands `viewcfg` and `savecfg`.
-
-### Current Development Goals
-
-There are might be cases asm2cfg will not fully support all x86 or ARM assembly
-lines. If you encounter such problems please open an issue.
-
-Current developed goals are best described in issues section. Please open a new
-one if existing one does not exist.
-
-If you want to talk to me, you can contact me at Discord with name
-`Kazhuu#3121`.
-
-# Support riscv, add multiple fucntion drawing possibilities
-https://x8795278.blogspot.com/2022/10/rsicv-asm2cfg.html
-# Add SVG Viewer & Tarjan’s Algorithm
-https://www.geeksforgeeks.org/tarjan-algorithm-find-strongly-connected-components/
-# gen asm
-```
-riscv64-unknown-elf-objdump -D -l -d <file:elf>
-```
-# run 
-Adjust to manual input
-```
-python -m src.asm2cfg 
-```
+Original project: [Kazhuu/asm2cfg](https://github.com/Kazhuu/asm2cfg).
+Related request: [issue #24 — Mark dominator edges in CFG](https://github.com/Kazhuu/asm2cfg/issues/24).
+RISC-V semantics: [base control transfers](https://docs.riscv.org/reference/isa/v20260120/unpriv/rv32.html)
+and [compressed instructions](https://docs.riscv.org/reference/isa/v20260120/unpriv/c-st-ext.html).
+License: [MIT](LICENSE); original attribution is retained.

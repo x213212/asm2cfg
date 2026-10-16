@@ -7,6 +7,7 @@ name = "pypi"
 graphviz = "*"
 
 [dev-packages]
+networkx = ">=2.8"
 ipdb = "*"
 flake8 = "*"
 pytest = "*"

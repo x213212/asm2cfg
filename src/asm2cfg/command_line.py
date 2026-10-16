@@ -1,59 +1,111 @@
-"""
-Command-line usage support.
-"""
+"""Command-line orchestration; all input paths come from arguments."""
 
 import argparse
-from . import asm2cfg
+import json
+import subprocess
+import sys
+from pathlib import Path
+
+from .model import Program
+from .parser import ParseError, parse_program, read_lines
+from .render import call_graph, cfg_graph, safe_filename, write_graph
+from .report import html_report, program_report
+from .jumptables import recover_jump_tables
+from .memory import MemoryImage
 
 
-def delblankline(infile, outfile):
-    infopen = open(infile, 'r', encoding="utf-8")
-    outfopen = open(outfile, 'w', encoding="utf-8")
-
-    lines = infopen.readlines()
-    for line in lines:
-        if line.split():
-            outfopen.writelines(line)
-        else:
-            outfopen.writelines("")
-
-    infopen.close()
-    outfopen.close()
-
-
-def main():
-    """ Command-line entry point to the program. """
-    parser = argparse.ArgumentParser(
-        description='Program to draw dot control-flow graph from GDB disassembly for a function.',
-        epilog='If function CFG rendering takes too long, try to skip function calls with -c flag.'
-    )
-    parser.add_argument('assembly_file',
-                        help='File to contain one function assembly dump')
+def argument_parser():
+    parser = argparse.ArgumentParser(description='Draw CFGs and call graphs from GDB or objdump disassembly.')
+    parser.add_argument('assembly_file', nargs='+', help='Assembly dumps; distinct functions can span multiple files')
+    parser.add_argument('--target', choices=['x86', 'arm', 'riscv'], default='riscv')
     parser.add_argument('-c', '--skip-calls', action='store_true',
-                        help='Skip function calls from dividing code to blocks')
-    parser.add_argument('--target', choices=['x86', 'arm', 'riscv'], default='riscv',
-                        help='Specify target platform for assembly')
-    parser.add_argument('-v', '--view', action='store_true',
-                        help='View as a dot graph instead of saving to a file')
-    args = parser.parse_args()
-    print('If function CFG rendering takes too long, try to skip function calls with -c flag')
-    get_print_list = []
-    get_asm_file = []
+                        help='Keep calls within their surrounding CFG blocks')
+    parser.add_argument('--graph', choices=['cfg', 'calls', 'both'], default='both')
+    parser.add_argument('--format', choices=['svg', 'pdf', 'png', 'dot', 'json', 'html'], default='svg')
+    parser.add_argument('-o', '--output-dir', type=Path, default=Path('.'))
+    parser.add_argument('--function', action='append', help='Render only this function CFG; repeat to select more')
+    parser.add_argument('--dominators', action='store_true', help='Highlight immediate dominators (issue #24)')
+    parser.add_argument('--no-loops', action='store_true', help='Disable Tarjan SCC cycle coloring')
+    parser.add_argument('--direction', choices=['horizontal', 'vertical'], default='horizontal',
+                        help='Arrange graphs left-to-right (default) or top-to-bottom')
+    parser.add_argument('--render-timeout', type=float, default=30, metavar='SECONDS')
+    memory = parser.add_mutually_exclusive_group()
+    memory.add_argument('--binary', type=Path, help='Read jump-table bytes from the matching linked x86 ELF')
+    memory.add_argument('--table-data', type=Path, help='Read jump-table bytes from objdump -s section contents')
+    parser.add_argument('-v', '--view', action='store_true', help='Open the generated graph with the system viewer')
+    return parser
 
-    # lines = asm2cfg.read_lines(args.assembly_file)
-    delblankline("/root/x21321219/asm2cfg/a.asm", "/root/x21321219/asm2cfg/a3.asm")
-    delblankline("/root/x21321219/asm2cfg/a2.asm", "/root/x21321219/asm2cfg/a4.asm")
-    lines = asm2cfg.read_lines("/root/x21321219/asm2cfg/a3.asm")
-    get_asm_file.append(lines)
-    lines2 = asm2cfg.read_lines("/root/x21321219/asm2cfg/a4.asm")
-    get_asm_file.append(lines2)
-    for asm in get_asm_file:
-        function_name, basic_blocks = asm2cfg.parse_lines(asm, args.skip_calls, args.target)
-        get_print_list.append([function_name, basic_blocks])
 
-    print("start draw")
-
-    # asm2cfg.draw_cfg(function_name, get_print_list, args.view)
-    # tarjan algorithm    
-    asm2cfg.tarjans(function_name, get_print_list, args.view)
-
+def main(argv=None):
+    parser = argument_parser()
+    args = parser.parse_args(argv)
+    if args.render_timeout <= 0:
+        parser.error('--render-timeout must be greater than zero')
+    try:
+        program = Program()
+        for filename in args.assembly_file:
+            parsed = parse_program(read_lines(filename), args.target, args.skip_calls, source=filename)
+            duplicates = program.functions.keys() & parsed.functions.keys()
+            if duplicates:
+                raise ParseError('Duplicate function names across inputs: ' + ', '.join(sorted(duplicates)) +
+                                 '. Render versions separately and open compare.html for side-by-side viewing.')
+            program.functions.update(parsed.functions)
+            program.diagnostics.extend(parsed.diagnostics)
+        if args.binary or args.table_data:
+            if args.target != 'x86':
+                raise ParseError('Jump-table recovery currently supports --target x86')
+            image = MemoryImage.from_elf(args.binary) if args.binary else MemoryImage.from_objdump(
+                read_lines(args.table_data))
+            if args.binary:
+                for function in program.functions.values():
+                    for inst in function.instructions:
+                        if inst.encoding is not None and image.read(inst.address.abs, inst.encoding.size()) != bytes(
+                                inst.encoding.bites):
+                            raise ParseError(f'Binary/disassembly mismatch at 0x{inst.address.abs:x}')
+            recover_jump_tables(program, image, args.skip_calls)
+        selected = args.function or list(program.functions)
+        for name in selected:
+            if name not in program.functions:
+                raise ParseError(f'Function {name!r} not found in input')
+        args.output_dir.mkdir(parents=True, exist_ok=True)
+        if args.format == 'json':
+            destination = args.output_dir / 'analysis.json'
+            data = json.dumps(program_report(program), ensure_ascii=False, indent=2) + '\n'
+            destination.write_text(data, encoding='utf8')
+            print(f'Saved analysis to {destination}')
+            return 0
+        graphs = []
+        if args.graph in ('cfg', 'both'):
+            used = set()
+            for number, name in enumerate(dict.fromkeys(selected), 1):
+                stem = safe_filename(name)
+                if stem in used or (stem == 'calls' and args.graph == 'both'):
+                    stem += f'_{number}'
+                while stem in used:
+                    stem += '_'
+                used.add(stem)
+                graphs.append((stem, cfg_graph(program.functions[name], loops=not args.no_loops,
+                                               dominators=args.dominators, direction=args.direction)))
+        if args.graph in ('calls', 'both'):
+            graphs.insert(0, ('calls', call_graph(program, direction=args.direction)))
+        if args.format == 'html':
+            destination = args.output_dir / 'report.html'
+            destination.write_text(html_report(graphs, program, args.render_timeout), encoding='utf8')
+            print(f'Saved report to {destination}')
+            if args.view:
+                from graphviz.backend import view as open_viewer
+                open_viewer(str(destination.resolve()))
+            return 0
+        for stem, graph in graphs:
+            destination = write_graph(graph, args.output_dir / f'{stem}.{args.format}',
+                                      args.format, args.render_timeout)
+            print(f'Saved graph to {destination}')
+            if args.view:
+                from graphviz.backend import view as open_viewer
+                open_viewer(str(destination.resolve()))
+        for message in program.diagnostics:
+            print(f'warning: {message}', file=sys.stderr)
+        return 0
+    except (OSError, ValueError, subprocess.SubprocessError) as exc:
+        print(f'asm2cfg: {exc}', file=sys.stderr)
+        return 1

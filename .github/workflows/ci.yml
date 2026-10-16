@@ -2,76 +2,24 @@ name: CI
 on:
   workflow_dispatch:
   push:
-    paths-ignore:
-    - 'LICENSE'
-    - 'README.md'
   pull_request:
-    paths-ignore:
-    - 'LICENSE'
-    - 'README.md'
 jobs:
-  Baseline:
+  test:
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-18.04, ubuntu-20.04, ubuntu-latest]
-        py: [python3.6, python3.7, python3]  # 3.5 lacks f-strings
-    runs-on: ${{ matrix.os }}
-    env:
-      PYTHON: ${{ matrix.py }}
+        python: ['3.10', '3.12', '3.13']
     steps:
-    - uses: actions/checkout@v2
-    - name: Install deps
-      run: |
-        sudo add-apt-repository ppa:deadsnakes/ppa
-        scripts/install-deps.sh
-    - name: Install pipenv Ubuntu 18.04
-      # Why specific version of pipenv, check this https://github.com/pypa/pipenv/issues/4829
-      if: matrix.os == 'ubuntu-18.04'
-      run: |
-        ${{ matrix.py }} -m pip install pipenv==2021.5.29
-        pipenv install --dev
-    - name: Install pipenv others
-      if: matrix.os != 'ubuntu-18.04'
-      run: |
-        ${{ matrix.py }} -m pip install pipenv
-        pipenv install --dev
-    - name: Run tests
-      run: pipenv run pytest test/
-  Lint:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: Install deps
-      run: |
-        python3 -m pip install pipenv
-        pipenv install --dev
-        scripts/install-deps.sh
-    - name: flake8
-      run: pipenv run flake8
-    - name: pylint
-      run: |
-        pipenv run pylint src test
-        pipenv run pylint -d duplicate-code,invalid-name test/templates/*.py
-  Coverage:
-    needs: [Lint, Baseline]
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: Install deps
-      run: |
-        python3 -m pip install pipenv
-        pipenv install --dev
-        scripts/install-deps.sh
-        # Install packages to system python because that will be used by GDB.
-        # This is needed so we get correct coverage report when testing GDB
-        # integration. Otherwise Python code executed by GDB integration does
-        # not get calculated as covered.
-        pipenv run pip freeze > requirements.txt
-        pip3 install -r requirements.txt
-    - name: Run tests
-      run: pipenv run pytest --cov-report xml --cov=src test/
-    - name: Codecov
-      uses: codecov/codecov-action@v2
-      with:
-        files: ./coverage.xml
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Install system tools
+        run: sudo apt-get update && sudo apt-get install -y graphviz gdb gcc
+      - name: Install package and test dependencies
+        run: python -m pip install -e '.[test]'
+      - name: Test
+        run: python -m pytest test/
+      - name: Lint
+        run: python -m flake8 src test

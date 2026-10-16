@@ -24,3 +24,8 @@ coverage.xml
 # Test files
 a.out
 main.pdf
+
+# Local environments and generated graphs
+.venv/
+artifacts/
+.pytest_cache/

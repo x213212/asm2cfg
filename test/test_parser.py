@@ -281,7 +281,6 @@ Dump of assembler code for function main:
         self.assertIs(other_block.no_jump_edge, None)
         self.assertEqual(len(other_block.instructions), 2)
 
-    @unittest.expectedFailure
     def test_jumptables(self):
         lines = '''\
 Dump of assembler code for function bar:
@@ -330,10 +329,22 @@ Dump of assembler code for function bar:
    0x000000000000111a <+170>:	nopw   0x0(%rax,%rax,1)
    0x0000000000001120 <+176>:	retq
 '''.split('\n')
-        _, blocks = asm2cfg.parse_lines(lines, False, 'x86')
+        from src.asm2cfg.memory import MemoryImage
+        from src.asm2cfg.jumptables import recover_jump_tables
 
-        # TODO: special block for indirect jumps
-        self.assertEqual(len(blocks), 4)
+        # Supply the actual table data; disassembly alone does not contain its entries.
+        targets = (0x1110, 0x10b0, 0x1120, 0x10be, 0x10d0,
+                   0x10f0, 0x1100, 0x10e0, 0x109f, 0x1098)
+        content = b''.join((target - 0x2004).to_bytes(4, 'little', signed=True) for target in targets)
+        program = asm2cfg.parse_program(lines, 'x86')
+        recover_jump_tables(program, MemoryImage([(0x2004, content)]))
+        function = program.functions['bar']
+        self.assertEqual(len(function.jump_tables), 1)
+        self.assertEqual(function.jump_tables[0].targets, targets)
+        dispatch = next(block for block in function.blocks.values() if block.table_edges)
+        self.assertEqual(set(dispatch.table_edges), set(targets))
+        self.assertFalse(dispatch.unresolved_jump)
+        self.assertTrue(all(target in function.blocks for target in targets))
 
     def test_dummy_block(self):
         lines = '''\
